@@ -39,6 +39,12 @@ const resolvedOgImage = new URL(ogImage, site).toString();
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={resolvedOgImage} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script is:inline>
       (() => {
         const savedTheme = localStorage.getItem("theme");
@@ -51,10 +57,14 @@ const resolvedOgImage = new URL(ogImage, site).toString();
     </script>
   </head>
   <body class="min-h-full bg-surface-light text-text-light dark:bg-surface-dark dark:text-text-dark">
-    <Header />
-    <main class="mx-auto w-full max-w-5xl px-4 pb-16 pt-10 sm:px-6 lg:px-8">
-      <slot />
-    </main>
-    <Footer />
+    <div class="site-shell">
+      <div class="ambient-glow ambient-glow-one"></div>
+      <div class="ambient-glow ambient-glow-two"></div>
+      <Header />
+      <main class="mx-auto w-full max-w-6xl px-4 pb-16 pt-10 sm:px-6 lg:px-8">
+        <slot />
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>

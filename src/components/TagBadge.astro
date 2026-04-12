@@ -14,14 +14,14 @@ const style = `--tag-hue:${hueSeed};`;
     <a
       href={href}
       style={style}
-      class="inline-flex items-center rounded-full border border-transparent px-3 py-1 text-xs font-medium transition-colors hover:brightness-95 bg-[hsl(var(--tag-hue)_75%_95%)] text-[hsl(var(--tag-hue)_36%_30%)] dark:bg-[hsl(var(--tag-hue)_30%_24%)] dark:text-[hsl(var(--tag-hue)_78%_82%)]"
+      class="inline-flex items-center rounded-full border border-transparent px-3 py-1 text-xs font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:brightness-95 bg-[hsl(var(--tag-hue)_75%_95%)] text-[hsl(var(--tag-hue)_36%_30%)] dark:bg-[hsl(var(--tag-hue)_30%_24%)] dark:text-[hsl(var(--tag-hue)_78%_82%)]"
     >
       {tag}
     </a>
   ) : (
     <span
       style={style}
-      class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-[hsl(var(--tag-hue)_75%_95%)] text-[hsl(var(--tag-hue)_36%_30%)] dark:bg-[hsl(var(--tag-hue)_30%_24%)] dark:text-[hsl(var(--tag-hue)_78%_82%)]"
+      class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-[hsl(var(--tag-hue)_75%_95%)] text-[hsl(var(--tag-hue)_36%_30%)] dark:bg-[hsl(var(--tag-hue)_30%_24%)] dark:text-[hsl(var(--tag-hue)_78%_82%)]"
     >
       {tag}
     </span>
