@@ -15,8 +15,8 @@ export interface Post {
   summary: string;
 }
 
-const notionToken = process.env.NOTION_TOKEN;
-const notionDatabaseId = process.env.NOTION_DATABASE_ID;
+const notionToken = process.env.NOTION_TOKEN?.trim();
+const notionDatabaseId = process.env.NOTION_DATABASE_ID?.trim();
 
 const notion = new Client({ auth: notionToken });
 const notionToMarkdown = new NotionToMarkdown({ notionClient: notion });
