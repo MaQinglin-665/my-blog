@@ -1,0 +1,29 @@
+---
+interface Props {
+  tag: string;
+  href?: string;
+}
+
+const { tag, href } = Astro.props;
+const hueSeed = [...tag].reduce((acc, char) => acc + char.codePointAt(0)!, 0) % 360;
+const style = `--tag-hue:${hueSeed};`;
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      style={style}
+      class="inline-flex items-center rounded-full border border-transparent px-3 py-1 text-xs font-medium transition-colors hover:brightness-95 bg-[hsl(var(--tag-hue)_75%_95%)] text-[hsl(var(--tag-hue)_36%_30%)] dark:bg-[hsl(var(--tag-hue)_30%_24%)] dark:text-[hsl(var(--tag-hue)_78%_82%)]"
+    >
+      {tag}
+    </a>
+  ) : (
+    <span
+      style={style}
+      class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-[hsl(var(--tag-hue)_75%_95%)] text-[hsl(var(--tag-hue)_36%_30%)] dark:bg-[hsl(var(--tag-hue)_30%_24%)] dark:text-[hsl(var(--tag-hue)_78%_82%)]"
+    >
+      {tag}
+    </span>
+  )
+}
