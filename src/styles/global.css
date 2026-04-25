@@ -5,30 +5,32 @@
 @layer base {
   :root {
     color-scheme: light;
-    --bg-top: 248 250 252;
-    --bg-bottom: 240 244 252;
-    --blob-primary: 56 189 248;
-    --blob-secondary: 167 139 250;
+    --bg-top: 250 251 255;
+    --bg-bottom: 240 245 252;
+    --blob-primary: 14 165 233;
+    --blob-secondary: 245 158 11;
+    --grid-line: 100 116 139;
   }
 
   :root.dark {
     color-scheme: dark;
-    --bg-top: 15 23 42;
-    --bg-bottom: 2 6 23;
-    --blob-primary: 14 165 233;
-    --blob-secondary: 139 92 246;
+    --bg-top: 2 6 23;
+    --bg-bottom: 15 23 42;
+    --blob-primary: 56 189 248;
+    --blob-secondary: 249 115 22;
+    --grid-line: 71 85 105;
   }
 
   body {
     @apply bg-surface-light text-text-light antialiased dark:bg-surface-dark dark:text-text-dark;
     background-image:
       radial-gradient(
-        42rem 28rem at 10% -5%,
-        rgb(var(--blob-primary) / 0.14),
+        42rem 30rem at 12% -10%,
+        rgb(var(--blob-primary) / 0.16),
         transparent
       ),
       radial-gradient(
-        36rem 24rem at 90% 0%,
+        36rem 24rem at 92% 0%,
         rgb(var(--blob-secondary) / 0.14),
         transparent
       ),
@@ -36,7 +38,17 @@
         180deg,
         rgb(var(--bg-top)) 0%,
         rgb(var(--bg-bottom)) 100%
+      ),
+      linear-gradient(
+        rgb(var(--grid-line) / 0.1) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgb(var(--grid-line) / 0.1) 1px,
+        transparent 1px
       );
+    background-size: auto, auto, auto, 26px 26px, 26px 26px;
     font-family: "Space Grotesk", ui-sans-serif, -apple-system, BlinkMacSystemFont,
       "Segoe UI", sans-serif;
     line-height: 1.75;
@@ -65,15 +77,15 @@
   }
 
   .ambient-glow-one {
-    @apply left-[-9rem] top-16 h-72 w-72 bg-cyan-300/25 dark:bg-cyan-500/20;
+    @apply left-[-10rem] top-20 h-80 w-80 bg-cyan-300/25 dark:bg-cyan-500/20;
   }
 
   .ambient-glow-two {
-    @apply right-[-8rem] top-72 h-64 w-64 bg-violet-300/25 dark:bg-violet-500/20;
+    @apply right-[-10rem] top-80 h-72 w-72 bg-orange-300/25 dark:bg-orange-500/20;
   }
 
   .hero-panel {
-    @apply relative overflow-hidden rounded-3xl border border-white/65 bg-white/70 p-7 shadow-xl shadow-slate-900/5 backdrop-blur-sm dark:border-slate-700/70 dark:bg-slate-900/60 dark:shadow-black/20 sm:p-10;
+    @apply relative overflow-hidden rounded-3xl border border-white/70 bg-white/70 p-7 shadow-xl shadow-slate-900/5 backdrop-blur-md dark:border-slate-700/80 dark:bg-slate-900/60 dark:shadow-black/30 sm:p-10 lg:p-12;
   }
 
   .hero-title {
@@ -81,31 +93,47 @@
   }
 
   .hero-subtitle {
-    @apply mt-4 max-w-2xl text-base text-slate-600 dark:text-slate-300 sm:text-lg;
+    @apply mt-6 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300 sm:text-lg;
   }
 
   .hero-kicker {
-    @apply mb-4 block text-[0.78rem] tracking-[0.2em];
+    @apply mb-6 inline-flex rounded-full border border-cyan-200/70 bg-cyan-50/80 px-3 py-1 text-[0.7rem] font-semibold tracking-[0.18em] text-cyan-700 dark:border-cyan-500/40 dark:bg-cyan-500/15 dark:text-cyan-200;
   }
 
   .hero-metrics {
-    @apply mt-6 flex flex-wrap gap-3;
+    @apply mt-8 flex flex-wrap gap-3;
   }
 
   .metric-chip {
     @apply inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-semibold tracking-wide text-slate-700 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200;
   }
 
+  .hero-sidecard {
+    @apply rounded-2xl border border-slate-200/75 bg-white/85 p-5 shadow-lg shadow-slate-900/5 dark:border-slate-700/75 dark:bg-slate-900/70 dark:shadow-black/25;
+  }
+
+  .cta-button {
+    @apply inline-flex items-center justify-center rounded-full border border-cyan-300/70 bg-cyan-50 px-4 py-2 text-sm font-semibold text-cyan-800 transition-all hover:-translate-y-0.5 hover:border-cyan-400 hover:bg-cyan-100 dark:border-cyan-500/50 dark:bg-cyan-500/15 dark:text-cyan-100 dark:hover:border-cyan-400 dark:hover:bg-cyan-500/20;
+  }
+
   .section-panel {
-    @apply mt-8 rounded-2xl border border-slate-200/70 bg-white/65 p-5 shadow-lg shadow-slate-900/5 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/55 dark:shadow-black/20;
+    @apply mt-8 rounded-2xl border border-slate-200/70 bg-white/70 p-5 shadow-lg shadow-slate-900/5 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/55 dark:shadow-black/20;
   }
 
   .section-title {
     @apply text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400;
   }
 
+  .post-grid {
+    @apply grid grid-cols-1 gap-5 md:grid-cols-2;
+  }
+
   .empty-state {
     @apply rounded-2xl border border-dashed border-slate-300/80 bg-white/60 p-8 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-300;
+  }
+
+  .content-prose {
+    @apply prose prose-slate prose-img:rounded-2xl prose-img:border prose-img:border-slate-200 prose-img:shadow-md prose-a:text-cyan-700 hover:prose-a:text-cyan-600 prose-pre:rounded-xl prose-pre:border prose-pre:border-slate-200 prose-headings:scroll-mt-24 dark:prose-invert dark:prose-a:text-cyan-300 dark:hover:prose-a:text-cyan-200 dark:prose-pre:border-slate-700;
   }
 
   .fade-up {

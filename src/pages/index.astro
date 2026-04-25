@@ -8,25 +8,47 @@ const posts = await getAllPosts();
 const tags = await getAllTags();
 const base = import.meta.env.BASE_URL;
 const latestPost = posts[0];
+const latestPostUrl = latestPost ? `${base}blog/${latestPost.slug}/` : null;
 ---
 
 <BaseLayout
-  title="Home | My Blog"
-  description="A personal blog powered by Astro + Notion API, with modern layout and dark mode."
+  title="Home | MQL Blog"
+  description="一个由 Astro + Notion 驱动的个人博客，记录开发、思考和日常。"
 >
   <section class="hero-panel fade-up">
-    <p class="section-title hero-kicker">Journal • Ideas • Build Notes</p>
-    <h1 class="hero-title">写点能被时间留下来的内容。</h1>
-    <p class="hero-subtitle">
-      这是你的个人内容主场。每篇文章在 Notion 写完后，都会自动同步为静态页面，清爽、快速、长期可维护。
-    </p>
+    <div class="grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-end">
+      <div>
+        <p class="hero-kicker">PERSONAL PUBLISHING SYSTEM</p>
+        <h1 class="hero-title">在 Notion 写作，在博客优雅发布</h1>
+        <p class="hero-subtitle">
+          这里是你的内容主场。把想法、项目复盘和生活记录沉淀成长期可访问的文章，持续输出，持续成长。
+        </p>
 
-    <div class="hero-metrics">
-      <span class="metric-chip">Published: {posts.length}</span>
-      <span class="metric-chip">Tags: {tags.length}</span>
-      <span class="metric-chip">
-        Latest: {latestPost ? latestPost.title : "No post yet"}
-      </span>
+        <div class="hero-metrics">
+          <span class="metric-chip">Published: {posts.length}</span>
+          <span class="metric-chip">Tags: {tags.length}</span>
+          <span class="metric-chip">
+            Updated: {latestPost ? latestPost.publishedAt : "No post yet"}
+          </span>
+        </div>
+      </div>
+
+      <aside class="hero-sidecard">
+        <p class="section-title">Latest Highlight</p>
+        <p class="mt-2 text-xl font-semibold text-slate-900 dark:text-slate-100">
+          {latestPost ? latestPost.title : "准备发布你的第一篇文章"}
+        </p>
+        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          {latestPost
+            ? latestPost.summary || "最新文章已同步到站点，点击即可阅读。"
+            : "在 Notion 中把 Status 设为 Published，站点会自动生成页面。"}
+        </p>
+        {latestPostUrl && (
+          <a class="cta-button mt-4 w-full sm:w-auto" href={latestPostUrl}>
+            阅读最新文章
+          </a>
+        )}
+      </aside>
     </div>
   </section>
 
@@ -35,13 +57,13 @@ const latestPost = posts[0];
       <h2 class="section-title">Tag Navigator</h2>
       {tags.length > 0 && (
         <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
-          点击标签筛选文章
+          点击标签快速筛选文章
         </span>
       )}
     </div>
     <div class="mt-4 flex flex-wrap gap-2">
       {tags.length === 0 ? (
-        <p class="text-sm text-slate-500 dark:text-slate-400">还没有标签，写下第一篇文章后会自动生成。</p>
+        <p class="text-sm text-slate-500 dark:text-slate-400">还没有标签，发布文章后会自动生成。</p>
       ) : (
         tags.map((tag) => (
           <TagBadge tag={tag} href={`${base}tags/${encodeURIComponent(tag)}/`} />
@@ -60,11 +82,10 @@ const latestPost = posts[0];
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+    <div class="post-grid">
       {posts.length === 0 ? (
         <div class="empty-state">
-          还没有可展示的文章。请在 Notion 中创建文章并将 <strong>Status</strong> 设为
-          <strong>Published</strong>。
+          还没有可展示的文章。请在 Notion 数据库中新建文章，并把 <strong>Status</strong> 设为 <strong>Published</strong>。
         </div>
       ) : (
         posts.map((post, index) => (

@@ -1,6 +1,17 @@
-<footer class="mt-14 border-t border-slate-200/70 pb-10 pt-8 dark:border-slate-800/80">
-  <div class="mx-auto grid w-full max-w-6xl gap-3 px-4 text-sm text-slate-500 sm:px-6 lg:px-8 dark:text-slate-400">
-    <p>Copyright {new Date().getFullYear()} My Blog. Crafted with Astro + Notion.</p>
-    <p>Write in Notion. Publish with one deploy. Keep creating.</p>
+---
+const year = new Date().getFullYear();
+const base = import.meta.env.BASE_URL;
+---
+
+<footer class="mt-16 border-t border-slate-200/70 pb-10 pt-8 dark:border-slate-800/80">
+  <div class="mx-auto grid w-full max-w-6xl gap-4 px-4 text-sm text-slate-500 sm:px-6 lg:px-8 dark:text-slate-400 md:grid-cols-[1fr_auto] md:items-center">
+    <div>
+      <p class="font-medium text-slate-700 dark:text-slate-200">Copyright {year} MQL Blog</p>
+      <p class="mt-1">Write in Notion, publish with Astro, and keep shipping.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <a class="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white" href={base}>Home</a>
+      <a class="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white" href={`${base}#posts`}>Posts</a>
+    </div>
   </div>
 </footer>
