@@ -72,25 +72,28 @@ function readCoverUrl(page: PageObjectResponse) {
   const properties = page.properties as Record<string, unknown>;
   const preferredKeys = ["Cover", "Image", "Photo", "Banner", "Media"];
 
-  const preferredProperty = preferredKeys
-    .map((key) => properties[key])
-    .find(
-      (item): item is FilesPropertyLike =>
-        (item as FilesPropertyLike | undefined)?.type === "files"
-    );
-
-  const firstFilesProperty = Object.values(properties).find(
+  const allFilesProperties = Object.values(properties).filter(
     (item): item is FilesPropertyLike =>
       (item as FilesPropertyLike | undefined)?.type === "files"
   );
 
-  const fileCandidates = preferredProperty?.files ?? firstFilesProperty?.files;
-  if (Array.isArray(fileCandidates)) {
-    for (const file of fileCandidates) {
-      const url = readFileUrl(file);
-      if (url) {
-        return url;
-      }
+  const preferredFiles = preferredKeys.flatMap((key) => {
+    const property = properties[key] as FilesPropertyLike | undefined;
+    if (property?.type !== "files") {
+      return [];
+    }
+    return property.files ?? [];
+  });
+
+  const candidateFiles = [
+    ...preferredFiles,
+    ...allFilesProperties.flatMap((property) => property.files ?? [])
+  ];
+
+  for (const file of candidateFiles) {
+    const url = readFileUrl(file);
+    if (url) {
+      return url;
     }
   }
 
