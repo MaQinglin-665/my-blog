@@ -162,7 +162,9 @@
   }
 
   .featured-cover {
-    @apply relative block min-h-[16rem] overflow-hidden md:min-h-full;
+    @apply relative block overflow-hidden;
+    aspect-ratio: 16 / 9;
+    max-height: 34rem;
   }
 
   .featured-image {
@@ -296,6 +298,12 @@
 
     .featured-image {
       transform: scale(1.05);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .featured-cover {
+      aspect-ratio: 16 / 8.5;
     }
   }
 }

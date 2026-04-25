@@ -150,6 +150,10 @@ function readPostFromPage(page: PageObjectResponse): Post {
   };
 }
 
+function normalizeSlug(slug: string) {
+  return slug.trim().toLowerCase();
+}
+
 async function queryPublishedPages() {
   if (!hasNotionEnv()) {
     warnMissingEnv();
@@ -205,6 +209,29 @@ export async function getAllPosts() {
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
   });
+
+  const coverBySlug = new Map<string, string>();
+  for (const post of posts) {
+    const key = normalizeSlug(post.slug);
+    if (post.coverUrl && !coverBySlug.has(key)) {
+      coverBySlug.set(key, post.coverUrl);
+    }
+  }
+  for (const post of posts) {
+    if (!post.coverUrl) {
+      post.coverUrl = coverBySlug.get(normalizeSlug(post.slug));
+    }
+  }
+
+  const slugCounts = new Map<string, number>();
+  for (const post of posts) {
+    const key = normalizeSlug(post.slug);
+    const seen = slugCounts.get(key) ?? 0;
+    if (seen > 0) {
+      post.slug = `${post.slug}-${seen + 1}`;
+    }
+    slugCounts.set(key, seen + 1);
+  }
 
   if (shouldCachePosts) {
     cachedPosts = posts;
