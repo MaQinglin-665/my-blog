@@ -8,7 +8,7 @@ const hasGithubEnv = Boolean(process.env.GITHUB_REPOSITORY);
 
 export default defineConfig({
   site: `https://${repositoryOwner}.github.io/${repositoryName}`,
-  base: hasGithubEnv ? `/${repositoryName}` : "/",
+  base: hasGithubEnv ? `/${repositoryName}/` : "/",
   integrations: [tailwind(), sitemap()],
   markdown: {
     syntaxHighlight: "shiki",
