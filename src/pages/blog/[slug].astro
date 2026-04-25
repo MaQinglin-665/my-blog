@@ -41,6 +41,7 @@ const displayDate = Number.isNaN(published.getTime())
 
 <BaseLayout
   title={`${post.title} | My Blog`}
+  ogImage={post.coverUrl}
   description={post.summary || `${post.title} - 博客文章`}
 >
   <article class="mx-auto w-full max-w-3xl">
@@ -50,6 +51,17 @@ const displayDate = Number.isNaN(published.getTime())
     >
       ← 返回首页
     </a>
+
+    {post.coverUrl && (
+      <figure class="mb-8 overflow-hidden rounded-2xl border border-slate-200/75 bg-slate-100 dark:border-slate-800/80 dark:bg-slate-900">
+        <img
+          src={post.coverUrl}
+          alt={`${post.title} cover`}
+          class="h-auto w-full object-cover"
+          loading="eager"
+        />
+      </figure>
+    )}
 
     <header class="mb-8 border-b border-slate-200 pb-6 dark:border-slate-800">
       <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-slate-100">

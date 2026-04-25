@@ -13,7 +13,19 @@ export interface Post {
   tags: string[];
   publishedAt: string;
   summary: string;
+  coverUrl?: string;
 }
+
+type NotionFileLike = {
+  type?: string;
+  external?: { url?: string };
+  file?: { url?: string };
+};
+
+type FilesPropertyLike = {
+  type?: string;
+  files?: NotionFileLike[];
+};
 
 const notionToken = process.env.NOTION_TOKEN?.trim();
 const notionDatabaseId = process.env.NOTION_DATABASE_ID?.trim();
@@ -43,6 +55,48 @@ function readPlainText(items: RichTextItemResponse[] = []) {
   return items.map((item) => item.plain_text).join("").trim();
 }
 
+function readFileUrl(file?: NotionFileLike | null) {
+  if (!file) {
+    return undefined;
+  }
+  if (file.type === "external") {
+    return file.external?.url?.trim() || undefined;
+  }
+  if (file.type === "file") {
+    return file.file?.url?.trim() || undefined;
+  }
+  return undefined;
+}
+
+function readCoverUrl(page: PageObjectResponse) {
+  const properties = page.properties as Record<string, unknown>;
+  const preferredKeys = ["Cover", "Image", "Photo", "Banner", "Media"];
+
+  const preferredProperty = preferredKeys
+    .map((key) => properties[key])
+    .find(
+      (item): item is FilesPropertyLike =>
+        (item as FilesPropertyLike | undefined)?.type === "files"
+    );
+
+  const firstFilesProperty = Object.values(properties).find(
+    (item): item is FilesPropertyLike =>
+      (item as FilesPropertyLike | undefined)?.type === "files"
+  );
+
+  const fileCandidates = preferredProperty?.files ?? firstFilesProperty?.files;
+  if (Array.isArray(fileCandidates)) {
+    for (const file of fileCandidates) {
+      const url = readFileUrl(file);
+      if (url) {
+        return url;
+      }
+    }
+  }
+
+  return readFileUrl(page.cover as NotionFileLike | null | undefined);
+}
+
 function readPostFromPage(page: PageObjectResponse): Post {
   const titleProperty = page.properties.Title;
   const slugProperty = page.properties.Slug;
@@ -69,6 +123,7 @@ function readPostFromPage(page: PageObjectResponse): Post {
     summaryProperty?.type === "rich_text"
       ? readPlainText(summaryProperty.rich_text)
       : "";
+  const coverUrl = readCoverUrl(page);
 
   const statusName =
     statusProperty?.type === "select"
@@ -87,7 +142,8 @@ function readPostFromPage(page: PageObjectResponse): Post {
     slug: slug || page.id.replace(/-/g, ""),
     tags,
     publishedAt,
-    summary
+    summary,
+    coverUrl
   };
 }
 

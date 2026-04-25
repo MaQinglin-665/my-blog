@@ -15,6 +15,20 @@ const displayDate = Number.isNaN(published.getTime())
 ---
 
 <article class="group rounded-3xl border border-slate-200/75 bg-white/80 p-6 shadow-lg shadow-slate-900/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl hover:shadow-slate-900/10 dark:border-slate-800/80 dark:bg-slate-900/65 dark:shadow-black/25 dark:hover:border-slate-700">
+  {post.coverUrl && (
+    <a
+      href={postUrl}
+      class="mb-5 block overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80"
+    >
+      <img
+        src={post.coverUrl}
+        alt={`${post.title} cover`}
+        loading="lazy"
+        class="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+      />
+    </a>
+  )}
+
   <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
     <span class="h-1.5 w-1.5 rounded-full bg-cyan-500/80"></span>
     <time datetime={post.publishedAt}>{displayDate}</time>
