@@ -2,33 +2,40 @@
 import ThemeToggle from "./ThemeToggle.astro";
 
 const base = import.meta.env.BASE_URL;
+const normalizedBase = base.endsWith("/") ? base : `${base}/`;
+const currentPath = Astro.url.pathname;
+const homePath = normalizedBase;
+const isHome = currentPath === homePath || currentPath === homePath.slice(0, -1);
+const isBlog = currentPath.includes(`${normalizedBase}blog/`);
+const isTags = currentPath.includes(`${normalizedBase}tags/`);
+
+function navClass(active: boolean) {
+  return `nav-pill ${active ? "nav-pill-active" : ""}`;
+}
 ---
 
 <header class="sticky top-0 z-40 border-b border-slate-200/65 bg-white/78 backdrop-blur-xl dark:border-slate-800/85 dark:bg-slate-950/78">
-  <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-    <a href={base} class="group inline-flex flex-col gap-1">
-      <span class="text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-slate-500 transition-colors group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200">
-        Personal Publishing
+  <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+    <a href={base} class="group inline-flex items-center gap-3">
+      <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-sm font-bold text-white dark:bg-slate-100 dark:text-slate-900">
+        M
       </span>
-      <span class="text-lg font-semibold text-slate-900 dark:text-slate-100 sm:text-xl">MQL Blog</span>
+      <span class="inline-flex flex-col gap-0.5">
+        <span class="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-slate-500 transition-colors group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200">
+          Personal Publishing
+        </span>
+        <span class="text-lg font-semibold text-slate-900 dark:text-slate-100 sm:text-xl">MQL Blog</span>
+      </span>
     </a>
 
-    <div class="flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/85 p-1 dark:border-slate-700/70 dark:bg-slate-900/75">
-      <a
-        href={base}
-        class="rounded-full px-3 py-1 text-sm font-medium text-slate-600 hover:bg-slate-200/70 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-      >
-        Home
-      </a>
-      <a
-        href={`${base}#posts`}
-        class="hidden rounded-full px-3 py-1 text-sm font-medium text-slate-600 hover:bg-slate-200/70 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white sm:inline-flex"
-      >
-        Posts
-      </a>
+    <div class="topbar-panel flex items-center gap-2">
+      <a href={base} class={navClass(isHome)}>Home</a>
+      <a href={`${base}#posts`} class={navClass(isBlog)}>Posts</a>
+      <a href={`${base}#tags`} class={navClass(isTags)}>Tags</a>
       <ThemeToggle />
     </div>
   </div>
+
   <div class="scroll-progress-track">
     <div id="scroll-progress" class="scroll-progress-fill"></div>
   </div>

@@ -7,9 +7,14 @@ import { getAllPosts, getAllTags } from "../lib/notion";
 const posts = await getAllPosts();
 const tags = await getAllTags();
 const base = import.meta.env.BASE_URL;
-const latestPost = posts[0];
-const latestPostUrl = latestPost ? `${base}blog/${latestPost.slug}/` : null;
-const postsUrl = `${base}#posts`;
+const featuredPost = posts[0] ?? null;
+const feedPosts = posts.length > 1 ? posts.slice(1) : [];
+const featuredUrl = featuredPost ? `${base}blog/${featuredPost.slug}/` : null;
+const featuredDate = featuredPost
+  ? new Intl.DateTimeFormat("zh-CN", { dateStyle: "long" }).format(
+      new Date(featuredPost.publishedAt)
+    )
+  : null;
 ---
 
 <BaseLayout
@@ -17,57 +22,82 @@ const postsUrl = `${base}#posts`;
   description="一个由 Astro + Notion 驱动的个人博客，记录开发、思考和日常。"
 >
   <section class="hero-panel fade-up">
-    <div class="grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-end">
+    <div class="grid gap-8 lg:grid-cols-[1.35fr_1fr] lg:items-end">
       <div>
         <p class="hero-kicker">PERSONAL PUBLISHING SYSTEM</p>
-        <h1 class="hero-title">在 Notion 写作，在博客优雅发布</h1>
+        <h1 class="hero-title">在 Notion 写作，在博客长期沉淀内容</h1>
         <p class="hero-subtitle">
-          这里是你的内容主场。把想法、项目复盘和生活记录沉淀成长期可访问的文章，持续输出，持续成长。
+          用更轻的写作流程，持续发布真正有价值的内容。技术复盘、项目日志、日常思考，都能稳定沉淀。
         </p>
+
         <div class="hero-actions">
-          {latestPostUrl ? (
-            <a class="cta-button" href={latestPostUrl}>继续阅读最新文章</a>
+          {featuredUrl ? (
+            <a class="cta-button" href={featuredUrl}>阅读最新文章</a>
           ) : (
-            <a class="cta-button" href={postsUrl}>查看文章列表</a>
+            <a class="cta-button" href="#posts">查看文章列表</a>
           )}
-          <a class="ghost-button" href={postsUrl}>浏览全部文章</a>
-          <span class="floating-pill">Auto deploy active</span>
+          <a class="ghost-button" href="#tags">查看标签</a>
+          <span class="floating-pill">Auto deploy every 5 min</span>
         </div>
 
         <div class="hero-metrics">
           <span class="metric-chip">Published: {posts.length}</span>
           <span class="metric-chip">Tags: {tags.length}</span>
           <span class="metric-chip">
-            Updated: {latestPost ? latestPost.publishedAt : "No post yet"}
+            Workflow: Notion → Astro → GitHub Pages
           </span>
         </div>
       </div>
 
       <aside class="hero-sidecard">
-        <p class="section-title">Latest Highlight</p>
+        <p class="section-title">Current Focus</p>
         <p class="mt-2 text-xl font-semibold text-slate-900 dark:text-slate-100">
-          {latestPost ? latestPost.title : "准备发布你的第一篇文章"}
+          {featuredPost ? featuredPost.title : "准备发布你的第一篇文章"}
         </p>
-        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          {latestPost
-            ? latestPost.summary || "最新文章已同步到站点，点击即可阅读。"
-            : "在 Notion 中把 Status 设为 Published，站点会自动生成页面。"}
+        <p class="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
+          {featuredPost
+            ? featuredPost.summary || "最新文章已同步到站点，点击即可继续阅读。"
+            : "在 Notion 中把 Status 设置为 Published，站点会自动生成页面。"}
         </p>
-        {latestPostUrl && (
-          <a class="cta-button mt-4 w-full sm:w-auto" href={latestPostUrl}>
-            阅读最新文章
-          </a>
-        )}
-        {!latestPostUrl && (
-          <p class="mt-4 text-xs text-slate-500 dark:text-slate-400">
-            Tip: 发布第一篇文章后，这里会自动展示最新内容。
-          </p>
+        {featuredUrl && (
+          <a class="cta-button mt-4 w-full sm:w-auto" href={featuredUrl}>Open Latest</a>
         )}
       </aside>
     </div>
   </section>
 
-  <section class="section-panel fade-up" data-delay="1">
+  {featuredPost && (
+    <section class="featured-panel fade-up" data-delay="1">
+      <div class="featured-layout">
+        <a class="featured-cover" href={featuredUrl!}>
+          {featuredPost.coverUrl ? (
+            <img class="featured-image" src={featuredPost.coverUrl} alt={`${featuredPost.title} cover`} />
+          ) : (
+            <div class="flex h-full w-full items-end bg-gradient-to-br from-cyan-100 via-sky-50 to-amber-50 p-6 dark:from-cyan-900/40 dark:via-slate-900 dark:to-amber-900/30">
+              <span class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300">
+                Featured Article
+              </span>
+            </div>
+          )}
+          <div class="featured-overlay"></div>
+        </a>
+
+        <div class="featured-content">
+          <p class="section-title">Featured Post</p>
+          <h2 class="featured-title">{featuredPost.title}</h2>
+          {featuredDate && (
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{featuredDate}</p>
+          )}
+          <p class="featured-summary">
+            {featuredPost.summary || "点击进入阅读完整内容。"}
+          </p>
+          <a class="cta-button mt-5" href={featuredUrl!}>Read Featured</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section id="tags" class="section-panel fade-up" data-delay="2">
     <div class="flex items-center justify-between gap-4">
       <h2 class="section-title">Tag Navigator</h2>
       {tags.length > 0 && (
@@ -78,7 +108,9 @@ const postsUrl = `${base}#posts`;
     </div>
     <div class="mt-4 flex flex-wrap gap-2">
       {tags.length === 0 ? (
-        <p class="text-sm text-slate-500 dark:text-slate-400">还没有标签，发布文章后会自动生成。</p>
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          还没有标签，发布文章后会自动生成。
+        </p>
       ) : (
         tags.map((tag) => (
           <TagBadge tag={tag} href={`${base}tags/${encodeURIComponent(tag)}/`} />
@@ -87,14 +119,10 @@ const postsUrl = `${base}#posts`;
     </div>
   </section>
 
-  <section id="posts" class="mt-10 fade-up" data-delay="2">
-    <div class="mb-5 flex items-end justify-between gap-4">
-      <div>
-        <p class="section-title">Latest Posts</p>
-        <h2 class="mt-1 text-3xl font-semibold text-slate-900 dark:text-slate-100 sm:text-4xl">
-          最近更新
-        </h2>
-      </div>
+  <section id="posts" class="mt-10 fade-up" data-delay="3">
+    <div class="mb-5">
+      <p class="section-title">Latest Posts</p>
+      <h2 class="section-heading">最近更新</h2>
     </div>
 
     <div class="post-grid">
@@ -102,8 +130,10 @@ const postsUrl = `${base}#posts`;
         <div class="empty-state">
           还没有可展示的文章。请在 Notion 数据库中新建文章，并把 <strong>Status</strong> 设为 <strong>Published</strong>。
         </div>
+      ) : feedPosts.length === 0 ? (
+        <div class="empty-state">当前只有一篇文章，已在上方精选展示。</div>
       ) : (
-        posts.map((post, index) => (
+        feedPosts.map((post, index) => (
           <div class="fade-up" data-delay={String((index % 3) + 1)}>
             <PostCard post={post} />
           </div>

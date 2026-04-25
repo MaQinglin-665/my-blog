@@ -31,21 +31,22 @@ const { tag, posts } = Astro.props;
 ---
 
 <BaseLayout title={`${tag} | 标签页`} description={`查看标签「${tag}」下的所有文章`}>
-  <section class="mb-8 rounded-2xl border border-slate-200/70 bg-white/72 p-6 shadow-lg shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900/55 dark:shadow-black/20">
-    <a
-      href={import.meta.env.BASE_URL}
-      class="mb-4 inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
-    >
+  <section class="page-hero">
+    <a href={import.meta.env.BASE_URL} class="back-link">
       <span aria-hidden="true">&larr;</span>
       返回首页
     </a>
-    <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-slate-100">
+    <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-slate-100">
       标签：{tag}
     </h1>
     <p class="mt-2 text-slate-600 dark:text-slate-300">共 {posts.length} 篇文章</p>
   </section>
 
   <section class="post-grid">
-    {posts.map((post) => <PostCard post={post} />)}
+    {posts.map((post, index) => (
+      <div class="fade-up" data-delay={String((index % 3) + 1)}>
+        <PostCard post={post} />
+      </div>
+    ))}
   </section>
 </BaseLayout>
