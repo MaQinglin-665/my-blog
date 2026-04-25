@@ -54,11 +54,11 @@ const displayDate = Number.isNaN(published.getTime())
     </a>
 
     {post.coverUrl && (
-      <figure class="mb-8 overflow-hidden rounded-2xl border border-slate-200/75 bg-slate-100 dark:border-slate-800/80 dark:bg-slate-900">
+      <figure class="mb-8 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-900">
         <img
           src={post.coverUrl}
           alt={`${post.title} cover`}
-          class="h-auto w-full object-cover"
+          class="h-auto w-full scale-[1.01] object-cover"
           loading="eager"
         />
       </figure>

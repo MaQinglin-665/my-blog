@@ -29,4 +29,25 @@ const base = import.meta.env.BASE_URL;
       <ThemeToggle />
     </div>
   </div>
+  <div class="scroll-progress-track">
+    <div id="scroll-progress" class="scroll-progress-fill"></div>
+  </div>
 </header>
+
+<script is:inline>
+  (() => {
+    const progress = document.querySelector("#scroll-progress");
+    if (!progress) return;
+
+    const update = () => {
+      const root = document.documentElement;
+      const max = root.scrollHeight - root.clientHeight;
+      const ratio = max > 0 ? (root.scrollTop / max) * 100 : 0;
+      progress.style.width = `${Math.min(Math.max(ratio, 0), 100)}%`;
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+  })();
+</script>

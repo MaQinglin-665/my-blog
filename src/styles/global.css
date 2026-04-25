@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   :root {
     color-scheme: light;
     --bg-top: 250 251 255;
@@ -55,6 +59,10 @@
     min-height: 100vh;
   }
 
+  ::selection {
+    background: rgb(14 165 233 / 0.26);
+  }
+
   a {
     @apply transition-colors duration-200;
   }
@@ -86,10 +94,15 @@
 
   .hero-panel {
     @apply relative overflow-hidden rounded-3xl border border-white/70 bg-white/70 p-7 shadow-xl shadow-slate-900/5 backdrop-blur-md dark:border-slate-700/80 dark:bg-slate-900/60 dark:shadow-black/30 sm:p-10 lg:p-12;
+    background-image: linear-gradient(
+      140deg,
+      rgb(255 255 255 / 0.42),
+      transparent 58%
+    );
   }
 
   .hero-title {
-    @apply max-w-3xl text-4xl font-semibold leading-[1.12] text-slate-900 dark:text-slate-50 sm:text-5xl;
+    @apply max-w-3xl text-4xl font-semibold leading-[1.08] text-slate-900 dark:text-slate-50 sm:text-5xl;
   }
 
   .hero-subtitle {
@@ -116,6 +129,18 @@
     @apply inline-flex items-center justify-center rounded-full border border-cyan-300/70 bg-cyan-50 px-4 py-2 text-sm font-semibold text-cyan-800 transition-all hover:-translate-y-0.5 hover:border-cyan-400 hover:bg-cyan-100 dark:border-cyan-500/50 dark:bg-cyan-500/15 dark:text-cyan-100 dark:hover:border-cyan-400 dark:hover:bg-cyan-500/20;
   }
 
+  .ghost-button {
+    @apply inline-flex items-center justify-center rounded-full border border-slate-300/80 bg-white/65 px-4 py-2 text-sm font-semibold text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:text-white;
+  }
+
+  .hero-actions {
+    @apply mt-7 flex flex-wrap items-center gap-3;
+  }
+
+  .floating-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-amber-300/70 bg-amber-50/85 px-3 py-1 text-xs font-semibold tracking-wide text-amber-700 dark:border-amber-500/45 dark:bg-amber-500/15 dark:text-amber-200;
+  }
+
   .section-panel {
     @apply mt-8 rounded-2xl border border-slate-200/70 bg-white/70 p-5 shadow-lg shadow-slate-900/5 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/55 dark:shadow-black/20;
   }
@@ -133,7 +158,19 @@
   }
 
   .content-prose {
-    @apply prose prose-slate prose-img:rounded-2xl prose-img:border prose-img:border-slate-200 prose-img:shadow-md prose-a:text-cyan-700 hover:prose-a:text-cyan-600 prose-pre:rounded-xl prose-pre:border prose-pre:border-slate-200 prose-headings:scroll-mt-24 dark:prose-invert dark:prose-a:text-cyan-300 dark:hover:prose-a:text-cyan-200 dark:prose-pre:border-slate-700;
+    @apply prose prose-slate prose-p:leading-8 prose-p:text-slate-700 prose-headings:font-semibold prose-headings:text-slate-900 prose-h2:mt-12 prose-h2:border-b prose-h2:border-slate-200 prose-h2:pb-2 prose-h3:mt-8 prose-strong:text-slate-900 prose-blockquote:border-l-cyan-500 prose-blockquote:bg-cyan-50/60 prose-blockquote:px-4 prose-blockquote:py-2 prose-img:rounded-2xl prose-img:shadow-md prose-a:text-cyan-700 hover:prose-a:text-cyan-600 prose-pre:rounded-xl prose-pre:border prose-pre:border-slate-200 prose-headings:scroll-mt-24 dark:prose-invert dark:prose-p:text-slate-200 dark:prose-strong:text-white dark:prose-h2:border-slate-700 dark:prose-a:text-cyan-300 dark:hover:prose-a:text-cyan-200 dark:prose-blockquote:border-l-cyan-400 dark:prose-blockquote:bg-cyan-500/10 dark:prose-pre:border-slate-700;
+  }
+
+  .reading-surface {
+    @apply rounded-3xl border border-slate-200/75 bg-white/78 p-6 shadow-xl shadow-slate-900/5 backdrop-blur-sm dark:border-slate-800/75 dark:bg-slate-900/62 dark:shadow-black/30 sm:p-8;
+  }
+
+  .scroll-progress-track {
+    @apply pointer-events-none absolute bottom-0 left-0 h-[2px] w-full bg-transparent;
+  }
+
+  .scroll-progress-fill {
+    @apply h-full w-0 bg-gradient-to-r from-cyan-500 via-sky-500 to-amber-500 transition-[width] duration-75;
   }
 
   .fade-up {

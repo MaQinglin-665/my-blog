@@ -9,6 +9,7 @@ const tags = await getAllTags();
 const base = import.meta.env.BASE_URL;
 const latestPost = posts[0];
 const latestPostUrl = latestPost ? `${base}blog/${latestPost.slug}/` : null;
+const postsUrl = `${base}#posts`;
 ---
 
 <BaseLayout
@@ -23,6 +24,15 @@ const latestPostUrl = latestPost ? `${base}blog/${latestPost.slug}/` : null;
         <p class="hero-subtitle">
           这里是你的内容主场。把想法、项目复盘和生活记录沉淀成长期可访问的文章，持续输出，持续成长。
         </p>
+        <div class="hero-actions">
+          {latestPostUrl ? (
+            <a class="cta-button" href={latestPostUrl}>继续阅读最新文章</a>
+          ) : (
+            <a class="cta-button" href={postsUrl}>查看文章列表</a>
+          )}
+          <a class="ghost-button" href={postsUrl}>浏览全部文章</a>
+          <span class="floating-pill">Auto deploy active</span>
+        </div>
 
         <div class="hero-metrics">
           <span class="metric-chip">Published: {posts.length}</span>
@@ -47,6 +57,11 @@ const latestPostUrl = latestPost ? `${base}blog/${latestPost.slug}/` : null;
           <a class="cta-button mt-4 w-full sm:w-auto" href={latestPostUrl}>
             阅读最新文章
           </a>
+        )}
+        {!latestPostUrl && (
+          <p class="mt-4 text-xs text-slate-500 dark:text-slate-400">
+            Tip: 发布第一篇文章后，这里会自动展示最新内容。
+          </p>
         )}
       </aside>
     </div>
