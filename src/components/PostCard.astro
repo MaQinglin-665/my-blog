@@ -18,15 +18,25 @@ const displayDate = Number.isNaN(published.getTime())
   {post.coverUrl && (
     <a
       href={postUrl}
-      class="relative mb-5 block aspect-[16/7.7] overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-900"
+      class="post-cover-shell mb-5 block"
     >
       <img
         src={post.coverUrl}
         alt={`${post.title} cover`}
         loading="lazy"
-        class="h-full w-full scale-[1.045] object-cover object-center transition-transform duration-500 group-hover:scale-[1.08]"
+        class="post-cover-image transition-transform duration-500 group-hover:scale-[1.14]"
       />
-      <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/28 via-transparent to-transparent"></div>
+      <div class="post-cover-overlay"></div>
+    </a>
+  )}
+  {!post.coverUrl && (
+    <a
+      href={postUrl}
+      class="mb-5 flex aspect-[16/7.7] items-end overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-100 via-sky-50 to-amber-50 p-4 dark:from-cyan-900/40 dark:via-slate-900 dark:to-amber-900/30"
+    >
+      <span class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300">
+        No Cover Image
+      </span>
     </a>
   )}
 
