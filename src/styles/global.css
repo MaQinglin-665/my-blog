@@ -163,13 +163,14 @@
 
   .featured-cover {
     @apply relative block overflow-hidden;
-    aspect-ratio: 16 / 9;
-    max-height: 34rem;
+    aspect-ratio: 16 / 8.8;
+    max-height: 26rem;
   }
 
   .featured-image {
     @apply h-full w-full object-cover object-center;
     transform: scale(1.08);
+    object-position: center 26%;
   }
 
   .featured-overlay {
@@ -303,7 +304,8 @@
 
   @media (min-width: 768px) {
     .featured-cover {
-      aspect-ratio: 16 / 8.5;
+      aspect-ratio: 16 / 7.8;
+      max-height: 24rem;
     }
   }
 }
