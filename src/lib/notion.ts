@@ -210,19 +210,6 @@ export async function getAllPosts() {
     );
   });
 
-  const coverBySlug = new Map<string, string>();
-  for (const post of posts) {
-    const key = normalizeSlug(post.slug);
-    if (post.coverUrl && !coverBySlug.has(key)) {
-      coverBySlug.set(key, post.coverUrl);
-    }
-  }
-  for (const post of posts) {
-    if (!post.coverUrl) {
-      post.coverUrl = coverBySlug.get(normalizeSlug(post.slug));
-    }
-  }
-
   const slugCounts = new Map<string, number>();
   for (const post of posts) {
     const key = normalizeSlug(post.slug);

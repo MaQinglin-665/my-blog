@@ -19,9 +19,16 @@ const displayDate = Number.isNaN(published.getTime())
     <a href={postUrl} class="post-cover-shell mb-5 block">
       <img
         src={post.coverUrl}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        class="post-cover-backdrop"
+      />
+      <img
+        src={post.coverUrl}
         alt={`${post.title} cover`}
         loading="lazy"
-        class="post-cover-image transition-transform duration-500 group-hover:scale-[1.14]"
+        class="post-cover-image transition-transform duration-500 group-hover:scale-[1.03]"
       />
       <div class="post-cover-overlay"></div>
     </a>
