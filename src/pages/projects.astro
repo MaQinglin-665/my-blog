@@ -4,6 +4,7 @@ import ProjectCard from "../components/ProjectCard.astro";
 import { projects } from "../data/projects";
 
 const base = import.meta.env.BASE_URL;
+const hasSingleProject = projects.length === 1;
 ---
 
 <BaseLayout
@@ -22,7 +23,7 @@ const base = import.meta.env.BASE_URL;
           项目作品集
         </h1>
         <p class="mt-4 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300">
-          这里集中展示正在做的项目。每个项目都可以连接到 GitHub、线上站点或后续复盘文章。
+          这里集中展示正在做的核心项目。项目连接 GitHub，也可以在后续接上线上站点和复盘文章。
         </p>
       </div>
 
@@ -33,13 +34,13 @@ const base = import.meta.env.BASE_URL;
         </div>
         <div class="rounded-lg border border-slate-200/75 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/55">
           <p class="section-title">Source</p>
-          <p class="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">GitHub</p>
+          <p class="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">Repo</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="project-grid">
+  <section class:list={["project-grid", hasSingleProject && "project-grid-single"]}>
     {projects.map((project, index) => (
       <div class="fade-up" data-delay={String((index % 3) + 1)}>
         <ProjectCard project={project} />
