@@ -1,7 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PostCard from "../components/PostCard.astro";
+import ProjectCard from "../components/ProjectCard.astro";
 import TagBadge from "../components/TagBadge.astro";
+import { featuredProjects, projects } from "../data/projects";
 import { getAllPosts, getAllTags } from "../lib/notion";
 
 const posts = await getAllPosts();
@@ -10,6 +12,8 @@ const base = import.meta.env.BASE_URL;
 const featuredPost = posts[0] ?? null;
 const feedPosts = posts.length > 1 ? posts.slice(1) : [];
 const featuredUrl = featuredPost ? `${base}blog/${featuredPost.slug}/` : null;
+const previewProjects = (featuredProjects.length > 0 ? featuredProjects : projects).slice(0, 2);
+const spotlightProject = previewProjects[0] ?? null;
 const featuredDate = featuredPost
   ? new Intl.DateTimeFormat("zh-CN", { dateStyle: "long" }).format(
       new Date(featuredPost.publishedAt)
@@ -18,16 +22,16 @@ const featuredDate = featuredPost
 ---
 
 <BaseLayout
-  title="Home | MQL Blog"
-  description="一个由 Astro + Notion 驱动的个人博客，记录开发、思考和日常。"
+  title="MQL Blog | 写作与项目"
+  description="MQL 的个人博客与项目展示，记录开发、AI 实践、作品迭代和日常思考。"
 >
   <section class="hero-panel fade-up">
     <div class="grid gap-8 lg:grid-cols-[1.35fr_1fr] lg:items-end">
       <div>
-        <p class="hero-kicker">PERSONAL PUBLISHING SYSTEM</p>
-        <h1 class="hero-title">在 Notion 写作，在博客长期沉淀内容</h1>
+        <p class="hero-kicker">WRITING / PROJECTS / NOTES</p>
+        <h1 class="hero-title">把写作、项目和复盘放在同一个现场</h1>
         <p class="hero-subtitle">
-          用更轻的写作流程，持续发布真正有价值的内容。技术复盘、项目日志、日常思考，都能稳定沉淀。
+          这里记录正在做的项目、解决问题的过程，以及值得长期保存的思考。文章负责沉淀，项目负责展示，复盘让每次迭代都有回声。
         </p>
 
         <div class="hero-actions">
@@ -36,12 +40,14 @@ const featuredDate = featuredPost
           ) : (
             <a class="cta-button" href="#posts">查看文章列表</a>
           )}
+          <a class="ghost-button" href={`${base}projects/`}>查看项目</a>
           <a class="ghost-button" href="#tags">查看标签</a>
           <span class="floating-pill">Auto deploy every 5 min</span>
         </div>
 
         <div class="hero-metrics">
-          <span class="metric-chip">Published: {posts.length}</span>
+          <span class="metric-chip">Posts: {posts.length}</span>
+          <span class="metric-chip">Projects: {projects.length}</span>
           <span class="metric-chip">Tags: {tags.length}</span>
           <span class="metric-chip">
             Workflow: Notion → Astro → GitHub Pages
@@ -50,24 +56,52 @@ const featuredDate = featuredPost
       </div>
 
       <aside class="hero-sidecard">
-        <p class="section-title">Current Focus</p>
+        <p class="section-title">Project Spotlight</p>
         <p class="mt-2 text-xl font-semibold text-slate-900 dark:text-slate-100">
-          {featuredPost ? featuredPost.title : "准备发布你的第一篇文章"}
+          {spotlightProject ? spotlightProject.title : "准备发布你的第一个项目"}
         </p>
         <p class="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
-          {featuredPost
-            ? featuredPost.summary || "最新文章已同步到站点，点击即可继续阅读。"
-            : "在 Notion 中把 Status 设置为 Published，站点会自动生成页面。"}
+          {spotlightProject
+            ? spotlightProject.summary
+            : "把项目名称、链接和亮点写进项目数据后，首页会自动展示。"}
         </p>
-        {featuredUrl && (
-          <a class="cta-button mt-4 w-full sm:w-auto" href={featuredUrl}>Open Latest</a>
+        {spotlightProject && (
+          <a
+            class="cta-button mt-4 w-full sm:w-auto"
+            href={spotlightProject.links[0].href}
+            target="_blank"
+            rel="noreferrer"
+          >
+            打开项目
+          </a>
         )}
       </aside>
     </div>
   </section>
 
+  <section id="projects" class="mt-6 fade-up" data-delay="1">
+    <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="section-title">Project Portfolio</p>
+        <h2 class="section-heading">正在打磨的项目</h2>
+        <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-300">
+          把 GitHub 项目放进博客首页，让访客能先看到你正在构建什么，再进入文章了解过程。
+        </p>
+      </div>
+      <a class="ghost-button w-full sm:w-auto" href={`${base}projects/`}>查看全部项目</a>
+    </div>
+
+    <div class="project-grid">
+      {previewProjects.map((project, index) => (
+        <div class="fade-up" data-delay={String((index % 2) + 1)}>
+          <ProjectCard project={project} compact />
+        </div>
+      ))}
+    </div>
+  </section>
+
   {featuredPost && (
-    <section class="featured-panel fade-up" data-delay="1">
+    <section class="featured-panel fade-up" data-delay="2">
       <div class="featured-layout">
         <a class="featured-cover" href={featuredUrl!}>
           {featuredPost.coverUrl ? (
@@ -97,7 +131,7 @@ const featuredDate = featuredPost
     </section>
   )}
 
-  <section id="tags" class="section-panel fade-up" data-delay="2">
+  <section id="tags" class="section-panel fade-up" data-delay="3">
     <div class="flex items-center justify-between gap-4">
       <h2 class="section-title">Tag Navigator</h2>
       {tags.length > 0 && (
@@ -119,7 +153,7 @@ const featuredDate = featuredPost
     </div>
   </section>
 
-  <section id="posts" class="mt-10 fade-up" data-delay="3">
+  <section id="posts" class="mt-10 fade-up" data-delay="4">
     <div class="mb-5">
       <p class="section-title">Latest Posts</p>
       <h2 class="section-heading">最近更新</h2>

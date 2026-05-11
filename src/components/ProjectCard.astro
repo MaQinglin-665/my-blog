@@ -1,0 +1,50 @@
+---
+import type { Project } from "../data/projects";
+
+interface Props {
+  project: Project;
+  compact?: boolean;
+}
+
+const { project, compact = false } = Astro.props;
+const style = `--project-hue:${project.accentHue};`;
+const primaryLink = project.links[0];
+---
+
+<article class:list={["project-card group", compact && "project-card-compact"]} style={style}>
+  <a class="project-cover" href={primaryLink.href} target="_blank" rel="noreferrer">
+    <img
+      src={project.coverUrl}
+      alt={`${project.title} project preview`}
+      loading="lazy"
+      class="project-cover-image"
+    />
+    <span class="project-status">{project.status}</span>
+  </a>
+
+  <div class="project-body">
+    <div class="project-meta-row">
+      <span>{project.language}</span>
+      <span aria-hidden="true">/</span>
+      <time datetime={project.updatedAt}>{project.updatedAt}</time>
+    </div>
+
+    <h3 class="project-title">
+      <a href={primaryLink.href} target="_blank" rel="noreferrer">{project.title}</a>
+    </h3>
+
+    <p class="project-summary">{compact ? project.summary : project.description}</p>
+
+    <div class="project-tags">
+      {project.tags.map((tag) => (
+        <span>{tag}</span>
+      ))}
+    </div>
+
+    <div class="project-actions">
+      {project.links.map((link) => (
+        <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+      ))}
+    </div>
+  </div>
+</article>
