@@ -21,6 +21,27 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    title: "AI 狼人杀 Alpha",
+    slug: "ai-werewolf",
+    summary: "本地可玩的 AI 狼人杀试玩版，支持真人参与、AI 自动对局、多人房间和临时公网分享。",
+    description:
+      "AI 狼人杀 Alpha 是一个 Next.js / TypeScript 项目。它把规则引擎、AI 发言、身份板子、复盘和多人房间整合到一套本地可试玩流程里；mock 模式不需要 API Key，适合快速演示和测试不同板子的推理节奏。",
+    year: "2026",
+    status: "Alpha",
+    language: "TypeScript",
+    updatedAt: "2026-05-16",
+    accentHue: 42,
+    coverUrl: "images/projects/ai-werewolf-cover.png",
+    tags: ["AI Werewolf", "Next.js", "TypeScript", "Multiplayer"],
+    links: [
+      {
+        label: "GitHub",
+        href: "https://github.com/MaQinglin-665/ai-werewolf"
+      }
+    ],
+    featured: true
+  },
+  {
     title: "AI-chat",
     slug: "ai-chat",
     summary: "桌面 AI 伙伴与 AI VTuber 实验项目，探索陪伴式聊天、记忆片段和情绪反馈。",
