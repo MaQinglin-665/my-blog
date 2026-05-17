@@ -31,7 +31,7 @@ export const projects: Project[] = [
     language: "TypeScript",
     updatedAt: "2026-05-16",
     accentHue: 42,
-    coverUrl: "images/projects/ai-werewolf-cover.png",
+    coverUrl: "images/projects/ai-werewolf-cover.png?v=2",
     tags: ["AI Werewolf", "Next.js", "TypeScript", "Multiplayer"],
     links: [
       {
