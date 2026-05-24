@@ -12,31 +12,31 @@ const base = import.meta.env.BASE_URL;
           AI 项目展示、开发复盘和技术索引放在同一个入口，用 Astro 静态发布。
         </p>
         <p class="mt-2 text-xs text-slate-500 dark:text-slate-500">
-          Copyright {year} MQL Blog. All rights reserved.
+          {year} MQL Blog. 保留所有权利。
         </p>
       </div>
 
       <div>
         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-          Navigation
+          导航
         </p>
         <div class="mt-3 flex flex-col gap-2">
-          <a class="hover:text-slate-900 dark:hover:text-white" href={base}>Home</a>
-          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}projects/`}>Projects</a>
-          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}#posts`}>Writing</a>
-          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}#tags`}>Tags</a>
+          <a class="hover:text-slate-900 dark:hover:text-white" href={base}>首页</a>
+          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}projects/`}>项目</a>
+          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}#posts`}>文章</a>
+          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}#tags`}>标签</a>
         </div>
       </div>
 
       <div>
         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-          Structure
+          内容结构
         </p>
         <div class="mt-3 flex flex-col gap-2">
-          <p>Projects as portfolio entries</p>
-          <p>Writing from Notion</p>
-          <p>Tags as topic index</p>
-          <p>GitHub Pages deployment</p>
+          <p>项目作为作品入口</p>
+          <p>文章来自 Notion</p>
+          <p>标签作为主题索引</p>
+          <p>通过 GitHub Pages 发布</p>
         </div>
       </div>
     </div>

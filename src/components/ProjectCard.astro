@@ -8,7 +8,7 @@ interface Props {
 
 const { project, compact = false } = Astro.props;
 const style = `--project-hue:${project.accentHue};`;
-const primaryLink = project.links[0];
+const detailUrl = `${import.meta.env.BASE_URL}projects/${project.slug}/`;
 const isRemoteCover = /^https?:\/\//.test(project.coverUrl);
 const coverSrc = isRemoteCover
   ? project.coverUrl
@@ -16,10 +16,10 @@ const coverSrc = isRemoteCover
 ---
 
 <article class:list={["project-card group", compact && "project-card-compact"]} style={style}>
-  <a class="project-cover" href={primaryLink.href} target="_blank" rel="noreferrer">
+  <a class="project-cover" href={detailUrl}>
     <img
       src={coverSrc}
-      alt={`${project.title} project preview`}
+      alt={`${project.title} 封面`}
       loading="lazy"
       class="project-cover-image"
     />
@@ -39,13 +39,13 @@ const coverSrc = isRemoteCover
     </div>
 
     <h3 class="project-title">
-      <a href={primaryLink.href} target="_blank" rel="noreferrer">{project.title}</a>
+      <a href={detailUrl}>{project.title}</a>
     </h3>
 
     <p class="project-summary">{compact ? project.summary : project.description}</p>
 
     {!compact && project.highlights.length > 0 && (
-      <ul class="project-highlights" aria-label={`${project.title} highlights`}>
+      <ul class="project-highlights" aria-label={`${project.title} 亮点`}>
         {project.highlights.map((highlight) => (
           <li>{highlight}</li>
         ))}
@@ -59,6 +59,7 @@ const coverSrc = isRemoteCover
     </div>
 
     <div class="project-actions">
+      <a href={detailUrl}>查看详情</a>
       {project.links.map((link) => (
         <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
       ))}

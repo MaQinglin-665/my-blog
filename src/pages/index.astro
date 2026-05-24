@@ -10,46 +10,45 @@ const posts = await getAllPosts();
 const tags = await getAllTags();
 const base = import.meta.env.BASE_URL;
 const featuredPost = posts[0] ?? null;
-const feedPosts = posts.length > 1 ? posts.slice(1) : [];
+const feedPosts = posts;
 const featuredUrl = featuredPost ? `${base}blog/${featuredPost.slug}/` : null;
 const previewProjects = (featuredProjects.length > 0 ? featuredProjects : projects).slice(0, 2);
 const spotlightProject = previewProjects[0] ?? null;
 const hasSingleProject = previewProjects.length === 1;
 const projectCategories = [...new Set(projects.map((project) => project.category))];
-const latestPosts = posts.slice(0, 3);
 const heroProject = spotlightProject;
-const heroProjectLink = heroProject?.links[0] || null;
+const heroProjectUrl = heroProject ? `${base}projects/${heroProject.slug}/` : `${base}projects/`;
 const heroProjectCover = heroProject
   ? /^https?:\/\//.test(heroProject.coverUrl)
     ? heroProject.coverUrl
     : `${base}${heroProject.coverUrl.replace(/^\/+/, "")}`
   : null;
 const heroStats = [
-  { label: "Projects", value: String(projects.length) },
-  { label: "Writing", value: String(posts.length) },
-  { label: "Tags", value: String(tags.length) }
+  { label: "项目", value: String(projects.length) },
+  { label: "文章", value: String(posts.length) },
+  { label: "标签", value: String(tags.length) }
 ];
 const contentPillars = [
   {
-    label: "Build",
+    label: "作品",
     title: "项目作品",
     description: "AI 应用、游戏系统和可试玩原型集中展示。",
     href: `${base}projects/`,
-    metric: `${projects.length} projects`
+    metric: `${projects.length} 个项目`
   },
   {
-    label: "Write",
+    label: "写作",
     title: "文章复盘",
     description: "把开发过程、问题定位和阶段总结沉淀成文章。",
     href: "#posts",
-    metric: `${posts.length} posts`
+    metric: `${posts.length} 篇文章`
   },
   {
-    label: "Index",
+    label: "索引",
     title: "标签索引",
     description: "通过标签快速回到同一类主题和技术线索。",
     href: "#tags",
-    metric: `${tags.length} tags`
+    metric: `${tags.length} 个标签`
   }
 ];
 const featuredDate = featuredPost
@@ -67,7 +66,7 @@ const featuredDate = featuredPost
     <div class="ai-hero-shell">
       <div class="ai-hero-content">
         <div>
-          <p class="ai-kicker">AI Developer / Project Builder</p>
+          <p class="ai-kicker">AI 开发者 / 作品构建</p>
           <h1 class="ai-title">把 AI 想法做成可试玩作品</h1>
           <p class="ai-subtitle">
             我在这里展示正在构建的 AI 项目，也把开发过程、问题定位和阶段复盘沉淀成文章。项目是入口，写作是证据。
@@ -97,14 +96,14 @@ const featuredDate = featuredPost
         <aside class="grid gap-4">
           <div class="ai-glow-card">
             {heroProject && heroProjectCover ? (
-              <a href={heroProjectLink ? heroProjectLink.href : `${base}projects/`} target="_blank" rel="noreferrer" class="block">
-                <img src={heroProjectCover} alt={`${heroProject.title} project preview`} class="h-52 w-full object-cover object-center sm:h-64" />
+              <a href={heroProjectUrl} class="block">
+                <img src={heroProjectCover} alt={`${heroProject.title} 封面`} class="h-52 w-full object-cover object-center sm:h-64" />
               </a>
             ) : (
               <div class="h-52 bg-slate-900 sm:h-64"></div>
             )}
             <div class="relative z-[1] p-5">
-              <p class="section-title text-cyan-200">Featured Project</p>
+              <p class="section-title text-cyan-200">精选项目</p>
               <h2 class="mt-2 text-2xl font-semibold leading-tight text-white">
                 {heroProject ? heroProject.title : "准备发布你的第一个 AI 项目"}
               </h2>
@@ -116,15 +115,15 @@ const featuredDate = featuredPost
 
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="ai-panel">
-              <p class="section-title text-slate-400">Latest Writing</p>
+              <p class="section-title text-slate-400">最新文章</p>
               <p class="mt-2 text-base font-semibold leading-6 text-white">
                 {featuredPost ? featuredPost.title : "等待第一篇文章发布"}
               </p>
             </div>
             <div class="ai-panel">
-              <p class="section-title text-slate-400">Current Focus</p>
+              <p class="section-title text-slate-400">当前方向</p>
               <p class="mt-2 text-base font-semibold leading-6 text-white">
-                AI Game / Agent / Desktop Companion
+                AI 游戏 / Agent / 桌面伙伴
               </p>
             </div>
           </div>
@@ -147,7 +146,7 @@ const featuredDate = featuredPost
   <section id="projects" class="mt-10 scroll-mt-28 fade-up" data-delay="2">
     <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p class="section-title">Project Portfolio</p>
+        <p class="section-title">项目作品</p>
         <h2 class="section-heading">正在打磨的项目</h2>
         <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-300">
           项目区按“作品”组织，而不是按代码仓库罗列。每个项目都显示阶段、技术栈、封面和可验证链接。
@@ -175,11 +174,11 @@ const featuredDate = featuredPost
       <div class="featured-layout">
         <a class="featured-cover" href={featuredUrl!}>
           {featuredPost.coverUrl ? (
-            <img class="featured-image" src={featuredPost.coverUrl} alt={`${featuredPost.title} cover`} />
+            <img class="featured-image" src={featuredPost.coverUrl} alt={`${featuredPost.title} 封面`} />
           ) : (
             <div class="flex h-full w-full items-end bg-gradient-to-br from-cyan-100 via-sky-50 to-amber-50 p-6 dark:from-cyan-900/40 dark:via-slate-900 dark:to-amber-900/30">
               <span class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300">
-                Featured Article
+                精选文章
               </span>
             </div>
           )}
@@ -187,7 +186,7 @@ const featuredDate = featuredPost
         </a>
 
         <div class="featured-content">
-          <p class="section-title">Featured Post</p>
+          <p class="section-title">精选文章</p>
           <h2 class="featured-title">{featuredPost.title}</h2>
           {featuredDate && (
             <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{featuredDate}</p>
@@ -195,7 +194,7 @@ const featuredDate = featuredPost
           <p class="featured-summary">
             {featuredPost.summary || "点击进入阅读完整内容。"}
           </p>
-          <a class="cta-button mt-5" href={featuredUrl!}>Read Featured</a>
+          <a class="cta-button mt-5" href={featuredUrl!}>阅读精选文章</a>
         </div>
       </div>
     </section>
@@ -203,7 +202,7 @@ const featuredDate = featuredPost
 
   <section id="tags" class="section-panel scroll-mt-28 fade-up" data-delay="4">
     <div class="flex items-center justify-between gap-4">
-      <h2 class="section-title">Tag Navigator</h2>
+      <h2 class="section-title">标签导航</h2>
       {tags.length > 0 && (
         <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
           点击标签快速筛选文章
@@ -226,12 +225,12 @@ const featuredDate = featuredPost
   <section id="posts" class="mt-10 scroll-mt-28 fade-up" data-delay="4">
     <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p class="section-title">Latest Posts</p>
-        <h2 class="section-heading">最近更新</h2>
+        <p class="section-title">全部文章</p>
+        <h2 class="section-heading">之前发布的文章</h2>
       </div>
-      {latestPosts.length > 0 && (
+      {posts.length > 0 && (
         <p class="text-sm text-slate-500 dark:text-slate-400">
-          最近 {latestPosts.length} 篇内容
+          共 {posts.length} 篇内容
         </p>
       )}
     </div>
@@ -239,10 +238,8 @@ const featuredDate = featuredPost
     <div class="post-grid">
       {posts.length === 0 ? (
         <div class="empty-state">
-          还没有可展示的文章。请在 Notion 数据库中新建文章，并把 <strong>Status</strong> 设为 <strong>Published</strong>。
+          还没有可展示的文章。请在 Notion 数据库中新建文章，并把状态设为已发布。
         </div>
-      ) : feedPosts.length === 0 ? (
-        <div class="empty-state">当前只有一篇文章，已在上方精选展示。</div>
       ) : (
         feedPosts.map((post, index) => (
           <div class="fade-up" data-delay={String((index % 3) + 1)}>

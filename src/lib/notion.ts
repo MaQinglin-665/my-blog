@@ -27,15 +27,14 @@ type FilesPropertyLike = {
   files?: NotionFileLike[];
 };
 
-const notionToken = process.env.NOTION_TOKEN?.trim();
-const notionDatabaseId = process.env.NOTION_DATABASE_ID?.trim();
+const notionToken = (import.meta.env.NOTION_TOKEN ?? process.env.NOTION_TOKEN)?.trim();
+const notionDatabaseId = (import.meta.env.NOTION_DATABASE_ID ?? process.env.NOTION_DATABASE_ID)?.trim();
 
 const notion = new Client({ auth: notionToken });
 const notionToMarkdown = new NotionToMarkdown({ notionClient: notion });
 
 let cachedPosts: Post[] | null = null;
 let hasWarnedMissingEnv = false;
-const shouldCachePosts = import.meta.env.PROD;
 
 function hasNotionEnv() {
   return Boolean(notionToken && notionDatabaseId);
@@ -136,7 +135,7 @@ function readPostFromPage(page: PageObjectResponse): Post {
         : undefined;
 
   if (statusName && statusName !== "Published") {
-    throw new Error(`Page ${page.id} is not published.`);
+    throw new Error(`页面 ${page.id} 不是已发布状态。`);
   }
 
   return {
@@ -199,7 +198,7 @@ async function queryPublishedPages() {
 }
 
 export async function getAllPosts() {
-  if (shouldCachePosts && cachedPosts) {
+  if (cachedPosts) {
     return cachedPosts;
   }
 
@@ -220,9 +219,7 @@ export async function getAllPosts() {
     slugCounts.set(key, seen + 1);
   }
 
-  if (shouldCachePosts) {
-    cachedPosts = posts;
-  }
+  cachedPosts = posts;
   return posts;
 }
 
@@ -235,7 +232,7 @@ export async function getPostBySlug(slug: string) {
 export async function getPostContent(pageId: string) {
   if (!hasNotionEnv()) {
     warnMissingEnv();
-    return "Notion content is unavailable because environment variables are missing.";
+  return "因为缺少环境变量，暂时无法读取 Notion 正文。";
   }
   const mdBlocks = await notionToMarkdown.pageToMarkdown(pageId);
   const mdOutput = notionToMarkdown.toMarkdownString(mdBlocks);

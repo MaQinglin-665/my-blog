@@ -1,0 +1,112 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { projects, type Project } from "../../data/projects";
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project }
+  }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const isRemoteCover = /^https?:\/\//.test(project.coverUrl);
+const coverSrc = isRemoteCover
+  ? project.coverUrl
+  : `${base}${project.coverUrl.replace(/^\/+/, "")}`;
+const style = `--project-hue:${project.accentHue};`;
+---
+
+<BaseLayout
+  title={`${project.title} | 项目详情`}
+  description={project.summary}
+  ogImage={coverSrc}
+>
+  <article class="project-detail" style={style}>
+    <section class="project-detail-hero">
+      <div>
+        <a href={`${base}projects/`} class="back-link">
+          <span aria-hidden="true">&larr;</span>
+          返回项目列表
+        </a>
+        <p class="section-title mt-6">项目详情</p>
+        <h1 class="mt-3 text-4xl font-semibold leading-tight text-slate-900 dark:text-slate-100 sm:text-6xl">
+          {project.title}
+        </h1>
+        <p class="mt-5 max-w-3xl text-base leading-8 text-slate-600 dark:text-slate-300 sm:text-lg">
+          {project.summary}
+        </p>
+
+        <div class="project-detail-meta">
+          <span>{project.category}</span>
+          <span>{project.status}</span>
+          <span>{project.language}</span>
+          <span>{project.year}</span>
+          <time datetime={project.updatedAt}>更新于 {project.updatedAt}</time>
+        </div>
+
+        <div class="project-detail-actions">
+          {project.links.map((link) => (
+            <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+          ))}
+        </div>
+      </div>
+
+      <figure class="project-detail-cover">
+        <img src={coverSrc} alt={`${project.title} 封面`} loading="eager" />
+      </figure>
+    </section>
+
+    <section class="project-detail-grid">
+      <div class="reading-surface project-detail-main">
+        <p class="section-title">作品介绍</p>
+        <p class="mt-4 text-base leading-8 text-slate-700 dark:text-slate-200">
+          {project.description}
+        </p>
+
+        <div class="project-detail-sections">
+          {project.detailSections.map((section) => (
+            <section>
+              <h2>{section.title}</h2>
+              <p>{section.body}</p>
+            </section>
+          ))}
+        </div>
+      </div>
+
+      <aside class="project-detail-sidebar">
+        <section>
+          <p class="section-title">亮点</p>
+          <ul class="project-highlights mt-4">
+            {project.highlights.map((highlight) => (
+              <li>{highlight}</li>
+            ))}
+          </ul>
+        </section>
+
+        <section>
+          <p class="section-title">标签</p>
+          <div class="project-tags">
+            {project.tags.map((tag) => (
+              <span>{tag}</span>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <p class="section-title">下一步</p>
+          <ul class="project-next-list">
+            {project.nextSteps.map((step) => (
+              <li>{step}</li>
+            ))}
+          </ul>
+        </section>
+      </aside>
+    </section>
+  </article>
+</BaseLayout>
