@@ -573,12 +573,13 @@
   }
 
   .project-detail-meta {
-    @apply mt-6 flex flex-wrap gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300;
+    @apply mt-6 flex max-w-full flex-wrap gap-2 overflow-hidden text-xs font-semibold text-slate-600 dark:text-slate-300;
   }
 
   .project-detail-meta span,
   .project-detail-meta time {
-    @apply rounded-full border border-slate-200/80 bg-white/75 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-900/70;
+    @apply max-w-full rounded-full border border-slate-200/80 bg-white/75 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-900/70;
+    overflow-wrap: anywhere;
   }
 
   .project-detail-actions {
@@ -604,6 +605,100 @@
 
   .project-detail-cover img {
     @apply h-full w-full object-cover object-center;
+  }
+
+  .project-showcase-panel {
+    @apply mt-8 grid overflow-hidden rounded-lg border border-slate-200/75 bg-white/80 shadow-2xl shadow-slate-900/10 backdrop-blur-sm dark:border-slate-800/80 dark:bg-slate-900/65 dark:shadow-black/30 lg:grid-cols-[1.05fr_0.95fr];
+  }
+
+  .project-showcase-visual {
+    @apply relative min-h-72 overflow-hidden bg-slate-950;
+  }
+
+  .project-showcase-visual::after {
+    @apply pointer-events-none absolute inset-0;
+    content: "";
+    background:
+      linear-gradient(to top, rgb(2 6 23 / 0.68), transparent 58%),
+      linear-gradient(135deg, hsl(var(--project-hue) 72% 52% / 0.24), transparent 52%);
+  }
+
+  .project-showcase-visual img {
+    @apply h-full w-full object-cover object-center;
+    min-height: 18rem;
+  }
+
+  .project-showcase-overlay {
+    @apply absolute bottom-5 left-5 right-5 z-[1] text-white;
+  }
+
+  .project-showcase-overlay span {
+    @apply inline-flex rounded-full border border-white/25 bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur;
+  }
+
+  .project-showcase-overlay strong {
+    @apply mt-3 block text-3xl font-semibold leading-tight sm:text-4xl;
+  }
+
+  .project-showcase-content {
+    @apply p-5 sm:p-7;
+  }
+
+  .project-showcase-content h2 {
+    @apply mt-2 text-3xl font-semibold leading-tight text-slate-900 dark:text-slate-100;
+  }
+
+  .project-showcase-content p:not(.section-title) {
+    @apply mt-4 text-sm leading-8 text-slate-600 dark:text-slate-300;
+  }
+
+  .project-fact-grid {
+    @apply mt-5 grid grid-cols-2 gap-3;
+  }
+
+  .project-fact-grid div {
+    @apply rounded-lg border border-slate-200/75 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-950/35;
+  }
+
+  .project-fact-grid span {
+    @apply text-xs font-semibold text-slate-500 dark:text-slate-400;
+  }
+
+  .project-fact-grid strong {
+    @apply mt-1 block text-base font-semibold text-slate-900 dark:text-slate-100;
+  }
+
+  .project-proof-list {
+    @apply mt-5 grid gap-3;
+  }
+
+  .project-proof-list article {
+    @apply flex gap-3 rounded-lg border border-slate-200/75 bg-white/75 p-4 dark:border-slate-800 dark:bg-slate-950/35;
+  }
+
+  .project-proof-list span {
+    @apply shrink-0 text-sm font-semibold;
+    color: hsl(var(--project-hue) 70% 42%);
+  }
+
+  :root.dark .project-proof-list span {
+    color: hsl(var(--project-hue) 80% 72%);
+  }
+
+  .project-proof-list p {
+    @apply m-0 text-sm leading-7 text-slate-700 dark:text-slate-200;
+  }
+
+  .project-showcase-actions {
+    @apply mt-6 flex flex-wrap gap-3;
+  }
+
+  .project-showcase-actions a {
+    @apply inline-flex items-center justify-center rounded-lg border border-slate-300/80 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-900/75 dark:text-slate-100 dark:hover:border-slate-500 dark:hover:text-white;
+  }
+
+  .project-showcase-actions a:first-child {
+    @apply border-slate-900 bg-slate-900 text-white hover:border-slate-900 hover:bg-slate-900 hover:text-white dark:border-slate-100 dark:bg-slate-100 dark:text-slate-950 dark:hover:border-slate-100 dark:hover:text-slate-950;
   }
 
   .project-detail-grid {
@@ -784,6 +879,10 @@
 
     .article-cover {
       aspect-ratio: 16 / 9.5;
+    }
+
+    .project-detail-meta time {
+      @apply w-full;
     }
 
     .featured-image {

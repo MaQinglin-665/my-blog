@@ -20,6 +20,13 @@ const coverSrc = isRemoteCover
   ? project.coverUrl
   : `${base}${project.coverUrl.replace(/^\/+/, "")}`;
 const style = `--project-hue:${project.accentHue};`;
+const projectFacts = [
+  { label: "阶段", value: project.status },
+  { label: "方向", value: project.category },
+  { label: "技术", value: project.language },
+  { label: "年份", value: project.year }
+];
+const primaryLink = project.links[0] ?? null;
 ---
 
 <BaseLayout
@@ -51,6 +58,7 @@ const style = `--project-hue:${project.accentHue};`;
         </div>
 
         <div class="project-detail-actions">
+          <a href="#showcase">查看成果展示</a>
           {project.links.map((link) => (
             <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
           ))}
@@ -62,8 +70,53 @@ const style = `--project-hue:${project.accentHue};`;
       </figure>
     </section>
 
+    <section id="showcase" class="project-showcase-panel">
+      <div class="project-showcase-visual">
+        <img src={coverSrc} alt={`${project.title} 成果预览`} loading="eager" />
+        <div class="project-showcase-overlay">
+          <span>{project.status}</span>
+          <strong>{project.title}</strong>
+        </div>
+      </div>
+
+      <div class="project-showcase-content">
+        <p class="section-title">成果展示</p>
+        <h2>从想法到可验证作品</h2>
+        <p>
+          这里先看这个作品已经成型的部分：它处在哪个阶段、主要解决什么问题、现在最值得点进去看的内容是什么。
+        </p>
+
+        <div class="project-fact-grid">
+          {projectFacts.map((fact) => (
+            <div>
+              <span>{fact.label}</span>
+              <strong>{fact.value}</strong>
+            </div>
+          ))}
+        </div>
+
+        <div class="project-proof-list" aria-label={`${project.title} 可验证亮点`}>
+          {project.highlights.slice(0, 3).map((highlight, index) => (
+            <article>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <p>{highlight}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="project-showcase-actions">
+          {primaryLink && (
+            <a href={primaryLink.href} target="_blank" rel="noreferrer">
+              打开 {primaryLink.label}
+            </a>
+          )}
+          <a href="#details">查看实现拆解</a>
+        </div>
+      </div>
+    </section>
+
     <section class="project-detail-grid">
-      <div class="reading-surface project-detail-main">
+      <div id="details" class="reading-surface project-detail-main">
         <p class="section-title">作品介绍</p>
         <p class="mt-4 text-base leading-8 text-slate-700 dark:text-slate-200">
           {project.description}
