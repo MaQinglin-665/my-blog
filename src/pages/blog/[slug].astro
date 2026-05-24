@@ -18,7 +18,24 @@ interface Props {
 }
 
 const { post } = Astro.props;
+const base = import.meta.env.BASE_URL;
 const markdown = await getPostContent(post.id);
+const allPosts = await getAllPosts();
+const relatedPosts = allPosts
+  .filter((candidate) => candidate.slug !== post.slug)
+  .map((candidate) => ({
+    post: candidate,
+    score: candidate.tags.filter((tag) => post.tags.includes(tag)).length
+  }))
+  .filter((item) => item.score > 0)
+  .sort((a, b) => {
+    if (b.score !== a.score) {
+      return b.score - a.score;
+    }
+    return new Date(b.post.publishedAt).getTime() - new Date(a.post.publishedAt).getTime();
+  })
+  .slice(0, 3)
+  .map((item) => item.post);
 const markdownProcessor = await createMarkdownProcessor({
   syntaxHighlight: {
     type: "shiki"
@@ -37,6 +54,14 @@ const published = new Date(post.publishedAt);
 const displayDate = Number.isNaN(published.getTime())
   ? post.publishedAt
   : new Intl.DateTimeFormat("zh-CN", { dateStyle: "long" }).format(published);
+const plainText = markdown
+  .replace(/```[\s\S]*?```/g, "")
+  .replace(/`[^`]*`/g, "")
+  .replace(/!\[[^\]]*\]\([^)]+\)/g, "")
+  .replace(/\[[^\]]+\]\([^)]+\)/g, "")
+  .replace(/[#>*_\-\n\r]/g, "")
+  .trim();
+const readingMinutes = Math.max(1, Math.ceil(plainText.length / 450));
 ---
 
 <BaseLayout
@@ -46,22 +71,22 @@ const displayDate = Number.isNaN(published.getTime())
 >
   <article class="mx-auto w-full max-w-4xl">
     <div class="page-hero">
-      <a href={import.meta.env.BASE_URL} class="back-link">
+      <a href={`${base}#posts`} class="back-link">
         <span aria-hidden="true">&larr;</span>
-        返回首页
+        返回全部文章
       </a>
       <h1 class="mt-4 text-3xl font-semibold leading-tight text-slate-900 dark:text-slate-100 sm:text-5xl">
         {post.title}
       </h1>
-      <div class="mt-4 flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+      <div class="article-meta">
         <time datetime={post.publishedAt}>{displayDate}</time>
-        <span>·</span>
+        <span>{readingMinutes} 分钟阅读</span>
         <span>Notion 同步</span>
       </div>
       {post.tags.length > 0 && (
         <div class="mt-4 flex flex-wrap gap-2">
           {post.tags.map((tag) => (
-            <TagBadge tag={tag} href={`${import.meta.env.BASE_URL}tags/${encodeURIComponent(tag)}/`} />
+            <TagBadge tag={tag} href={`${base}tags/${encodeURIComponent(tag)}/`} />
           ))}
         </div>
       )}
@@ -81,5 +106,44 @@ const displayDate = Number.isNaN(published.getTime())
 
       <div class="content-prose" set:html={renderedHtml}></div>
     </div>
+
+    <section class="article-afterword">
+      <div class="article-back-row">
+        <a href={`${base}#posts`}>返回全部文章</a>
+        <a href={base}>回到首页</a>
+      </div>
+
+      <div class="related-posts">
+        <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="section-title">继续阅读</p>
+            <h2>相关文章</h2>
+          </div>
+          {post.tags.length > 0 && (
+            <p>{post.tags.slice(0, 2).join(" / ")} 相关</p>
+          )}
+        </div>
+
+        {relatedPosts.length > 0 ? (
+          <div class="related-post-grid">
+            {relatedPosts.map((relatedPost) => (
+              <a href={`${base}blog/${relatedPost.slug}/`}>
+                <time datetime={relatedPost.publishedAt}>
+                  {new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium" }).format(
+                    new Date(relatedPost.publishedAt)
+                  )}
+                </time>
+                <strong>{relatedPost.title}</strong>
+                <span>{relatedPost.summary || "继续阅读这篇文章。"}</span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div class="empty-state">
+            暂时没有同标签文章。可以回到首页，从全部文章里继续浏览。
+          </div>
+        )}
+      </div>
+    </section>
   </article>
 </BaseLayout>

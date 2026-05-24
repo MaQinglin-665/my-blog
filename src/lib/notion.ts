@@ -268,7 +268,7 @@ export async function getPostContent(pageId: string) {
     notionToMarkdown.pageToMarkdown(pageId)
   );
   const mdOutput = notionToMarkdown.toMarkdownString(mdBlocks);
-  return typeof mdOutput === "string" ? mdOutput : mdOutput.parent;
+  return typeof mdOutput === "string" ? mdOutput : mdOutput.parent || "";
 }
 
 export async function getAllTags() {
