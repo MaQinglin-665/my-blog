@@ -15,6 +15,43 @@ const featuredUrl = featuredPost ? `${base}blog/${featuredPost.slug}/` : null;
 const previewProjects = (featuredProjects.length > 0 ? featuredProjects : projects).slice(0, 2);
 const spotlightProject = previewProjects[0] ?? null;
 const hasSingleProject = previewProjects.length === 1;
+const projectCategories = [...new Set(projects.map((project) => project.category))];
+const latestPosts = posts.slice(0, 3);
+const heroProject = spotlightProject;
+const heroProjectLink = heroProject?.links[0] || null;
+const heroProjectCover = heroProject
+  ? /^https?:\/\//.test(heroProject.coverUrl)
+    ? heroProject.coverUrl
+    : `${base}${heroProject.coverUrl.replace(/^\/+/, "")}`
+  : null;
+const heroStats = [
+  { label: "Projects", value: String(projects.length) },
+  { label: "Writing", value: String(posts.length) },
+  { label: "Tags", value: String(tags.length) }
+];
+const contentPillars = [
+  {
+    label: "Build",
+    title: "项目作品",
+    description: "AI 应用、游戏系统和可试玩原型集中展示。",
+    href: `${base}projects/`,
+    metric: `${projects.length} projects`
+  },
+  {
+    label: "Write",
+    title: "文章复盘",
+    description: "把开发过程、问题定位和阶段总结沉淀成文章。",
+    href: "#posts",
+    metric: `${posts.length} posts`
+  },
+  {
+    label: "Index",
+    title: "标签索引",
+    description: "通过标签快速回到同一类主题和技术线索。",
+    href: "#tags",
+    metric: `${tags.length} tags`
+  }
+];
 const featuredDate = featuredPost
   ? new Intl.DateTimeFormat("zh-CN", { dateStyle: "long" }).format(
       new Date(featuredPost.publishedAt)
@@ -27,67 +64,99 @@ const featuredDate = featuredPost
   description="MQL 的个人博客与项目展示，记录开发、AI 实践、作品迭代和日常思考。"
 >
   <section class="hero-panel fade-up">
-    <div class="grid gap-8 lg:grid-cols-[1.35fr_1fr] lg:items-end">
-      <div>
-        <p class="hero-kicker">WRITING / PROJECTS / NOTES</p>
-        <h1 class="hero-title">把写作、项目和复盘放在同一个现场</h1>
-        <p class="hero-subtitle">
-          这里记录正在做的项目、解决问题的过程，以及值得长期保存的思考。文章负责沉淀，项目负责展示，复盘让每次迭代都有回声。
-        </p>
+    <div class="ai-hero-shell">
+      <div class="ai-hero-content">
+        <div>
+          <p class="ai-kicker">AI Developer / Project Builder</p>
+          <h1 class="ai-title">把 AI 想法做成可试玩作品</h1>
+          <p class="ai-subtitle">
+            我在这里展示正在构建的 AI 项目，也把开发过程、问题定位和阶段复盘沉淀成文章。项目是入口，写作是证据。
+          </p>
 
-        <div class="hero-actions">
-          {featuredUrl ? (
-            <a class="cta-button" href={featuredUrl}>阅读最新文章</a>
-          ) : (
-            <a class="cta-button" href="#posts">查看文章列表</a>
-          )}
-          <a class="ghost-button" href={`${base}projects/`}>查看项目</a>
-          <a class="ghost-button" href="#tags">查看标签</a>
-          <span class="floating-pill">Auto deploy every 5 min</span>
+          <div class="hero-actions">
+            <a class="cta-button cta-button-bright" href={`${base}projects/`}>查看项目作品</a>
+            {featuredUrl ? (
+              <a class="ghost-button ghost-button-dark" href={featuredUrl}>阅读最新文章</a>
+            ) : (
+              <a class="ghost-button ghost-button-dark" href="#posts">查看文章列表</a>
+            )}
+            <a class="ghost-button ghost-button-dark" href="#tags">浏览标签</a>
+          </div>
+
+          <div class="hero-metrics">
+            {heroStats.map((stat) => (
+              <span class="metric-chip metric-chip-dark">
+                <strong>{stat.value}</strong>
+                {stat.label}
+              </span>
+            ))}
+            <span class="metric-chip metric-chip-dark">Notion → Astro → GitHub Pages</span>
+          </div>
         </div>
 
-        <div class="hero-metrics">
-          <span class="metric-chip">Posts: {posts.length}</span>
-          <span class="metric-chip">Projects: {projects.length}</span>
-          <span class="metric-chip">Tags: {tags.length}</span>
-          <span class="metric-chip">
-            Workflow: Notion → Astro → GitHub Pages
-          </span>
-        </div>
+        <aside class="grid gap-4">
+          <div class="ai-glow-card">
+            {heroProject && heroProjectCover ? (
+              <a href={heroProjectLink ? heroProjectLink.href : `${base}projects/`} target="_blank" rel="noreferrer" class="block">
+                <img src={heroProjectCover} alt={`${heroProject.title} project preview`} class="h-52 w-full object-cover object-center sm:h-64" />
+              </a>
+            ) : (
+              <div class="h-52 bg-slate-900 sm:h-64"></div>
+            )}
+            <div class="relative z-[1] p-5">
+              <p class="section-title text-cyan-200">Featured Project</p>
+              <h2 class="mt-2 text-2xl font-semibold leading-tight text-white">
+                {heroProject ? heroProject.title : "准备发布你的第一个 AI 项目"}
+              </h2>
+              <p class="mt-3 text-sm leading-7 text-slate-300">
+                {heroProject ? heroProject.summary : "项目发布后会自动成为首页的视觉焦点。"}
+              </p>
+            </div>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="ai-panel">
+              <p class="section-title text-slate-400">Latest Writing</p>
+              <p class="mt-2 text-base font-semibold leading-6 text-white">
+                {featuredPost ? featuredPost.title : "等待第一篇文章发布"}
+              </p>
+            </div>
+            <div class="ai-panel">
+              <p class="section-title text-slate-400">Current Focus</p>
+              <p class="mt-2 text-base font-semibold leading-6 text-white">
+                AI Game / Agent / Desktop Companion
+              </p>
+            </div>
+          </div>
+        </aside>
       </div>
-
-      <aside class="hero-sidecard">
-        <p class="section-title">Project Spotlight</p>
-        <p class="mt-2 text-xl font-semibold text-slate-900 dark:text-slate-100">
-          {spotlightProject ? spotlightProject.title : "准备发布你的第一个项目"}
-        </p>
-        <p class="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
-          {spotlightProject
-            ? spotlightProject.summary
-            : "把项目名称、链接和亮点写进项目数据后，首页会自动展示。"}
-        </p>
-        {spotlightProject && (
-          <a
-            class="cta-button mt-4 w-full sm:w-auto"
-            href={spotlightProject.links[0].href}
-            target="_blank"
-            rel="noreferrer"
-          >
-            打开项目
-          </a>
-        )}
-      </aside>
     </div>
   </section>
 
-  <section id="projects" class="mt-6 scroll-mt-28 fade-up" data-delay="1">
+  <section class="content-map fade-up" data-delay="1" aria-label="内容地图">
+    {contentPillars.map((pillar) => (
+      <a class="content-map-card" href={pillar.href}>
+        <span>{pillar.label}</span>
+        <strong>{pillar.title}</strong>
+        <p>{pillar.description}</p>
+        <small>{pillar.metric}</small>
+      </a>
+    ))}
+  </section>
+
+  <section id="projects" class="mt-10 scroll-mt-28 fade-up" data-delay="2">
     <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <p class="section-title">Project Portfolio</p>
         <h2 class="section-heading">正在打磨的项目</h2>
         <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-300">
-          把核心项目放进博客首页，让访客先看到你正在构建什么，再进入文章了解过程。
+          项目区按“作品”组织，而不是按代码仓库罗列。每个项目都显示阶段、技术栈、封面和可验证链接。
         </p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          {projectCategories.map((category) => (
+            <span class="surface-chip">{category}</span>
+          ))}
+        </div>
       </div>
       <a class="ghost-button w-full sm:w-auto" href={`${base}projects/`}>查看全部项目</a>
     </div>
@@ -102,7 +171,7 @@ const featuredDate = featuredPost
   </section>
 
   {featuredPost && (
-    <section class="featured-panel fade-up" data-delay="2">
+    <section class="featured-panel fade-up" data-delay="3">
       <div class="featured-layout">
         <a class="featured-cover" href={featuredUrl!}>
           {featuredPost.coverUrl ? (
@@ -132,7 +201,7 @@ const featuredDate = featuredPost
     </section>
   )}
 
-  <section id="tags" class="section-panel scroll-mt-28 fade-up" data-delay="3">
+  <section id="tags" class="section-panel scroll-mt-28 fade-up" data-delay="4">
     <div class="flex items-center justify-between gap-4">
       <h2 class="section-title">Tag Navigator</h2>
       {tags.length > 0 && (
@@ -155,9 +224,16 @@ const featuredDate = featuredPost
   </section>
 
   <section id="posts" class="mt-10 scroll-mt-28 fade-up" data-delay="4">
-    <div class="mb-5">
-      <p class="section-title">Latest Posts</p>
-      <h2 class="section-heading">最近更新</h2>
+    <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="section-title">Latest Posts</p>
+        <h2 class="section-heading">最近更新</h2>
+      </div>
+      {latestPosts.length > 0 && (
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          最近 {latestPosts.length} 篇内容
+        </p>
+      )}
     </div>
 
     <div class="post-grid">
