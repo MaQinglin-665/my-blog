@@ -14,7 +14,7 @@ const displayDate = Number.isNaN(published.getTime())
   : new Intl.DateTimeFormat("zh-CN", { dateStyle: "long" }).format(published);
 ---
 
-<article class="group rounded-lg border border-slate-200/75 bg-white/80 p-6 shadow-lg shadow-slate-900/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-300 hover:shadow-xl hover:shadow-slate-900/10 dark:border-slate-800/80 dark:bg-slate-900/70 dark:shadow-black/25 dark:hover:border-slate-700">
+<article class="post-card group">
   {post.coverUrl ? (
     <a href={postUrl} class="post-cover-shell mb-5 block">
       <img

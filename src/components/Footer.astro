@@ -9,7 +9,7 @@ const base = import.meta.env.BASE_URL;
       <div>
         <p class="text-base font-semibold text-slate-800 dark:text-slate-100">MQL Blog</p>
         <p class="mt-2">
-          用 Notion 写作，用 Astro 发布。保持输出，持续迭代。
+          AI 项目展示、开发复盘和技术索引放在同一个入口，用 Astro 静态发布。
         </p>
         <p class="mt-2 text-xs text-slate-500 dark:text-slate-500">
           Copyright {year} MQL Blog. All rights reserved.
@@ -22,21 +22,21 @@ const base = import.meta.env.BASE_URL;
         </p>
         <div class="mt-3 flex flex-col gap-2">
           <a class="hover:text-slate-900 dark:hover:text-white" href={base}>Home</a>
-          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}#posts`}>Posts</a>
           <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}projects/`}>Projects</a>
+          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}#posts`}>Writing</a>
           <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}#tags`}>Tags</a>
         </div>
       </div>
 
       <div>
         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-          Workflow
+          Structure
         </p>
         <div class="mt-3 flex flex-col gap-2">
-          <p>Show projects from GitHub</p>
-          <p>Draft in Notion</p>
-          <p>Set status to Published</p>
-          <p>Wait for auto deploy</p>
+          <p>Projects as portfolio entries</p>
+          <p>Writing from Notion</p>
+          <p>Tags as topic index</p>
+          <p>GitHub Pages deployment</p>
         </div>
       </div>
     </div>

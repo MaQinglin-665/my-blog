@@ -298,6 +298,10 @@
     @apply grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3;
   }
 
+  .post-card {
+    @apply rounded-lg border border-slate-200/75 bg-white/[.78] p-5 shadow-lg shadow-slate-900/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:bg-white/[.92] hover:shadow-xl hover:shadow-slate-900/10 dark:border-slate-800/80 dark:bg-slate-900/[.64] dark:shadow-black/25 dark:hover:border-slate-700;
+  }
+
   .post-cover-shell {
     @apply relative aspect-[16/9] overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-900;
   }
