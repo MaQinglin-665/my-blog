@@ -5,6 +5,9 @@ import { projects } from "../data/projects";
 
 const base = import.meta.env.BASE_URL;
 const hasSingleProject = projects.length === 1;
+const categories = [...new Set(projects.map((project) => project.category))];
+const statuses = [...new Set(projects.map((project) => project.status))];
+const projectTags = [...new Set(projects.flatMap((project) => project.tags))];
 ---
 
 <BaseLayout
@@ -18,16 +21,16 @@ const hasSingleProject = projects.length === 1;
     </a>
     <div class="mt-5 grid gap-5 lg:grid-cols-[1fr_0.65fr] lg:items-end">
       <div>
-        <p class="section-title">Projects</p>
+        <p class="section-title">AI Project Portfolio</p>
         <h1 class="mt-2 text-4xl font-semibold leading-tight text-slate-900 dark:text-slate-100 sm:text-5xl">
-          项目作品集
+          正在构建的 AI 作品
         </h1>
         <p class="mt-4 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300">
-          这里集中展示正在做的核心项目。项目连接 GitHub，也可以在后续接上线上站点和复盘文章。
+          每个项目都按作品展示：它解决什么问题、处在哪个阶段、用了哪些技术，以及哪里可以继续查看。
         </p>
       </div>
 
-      <div class="grid grid-cols-2 gap-3 text-sm">
+      <div class="project-stats-grid">
         <div class="rounded-lg border border-slate-200/75 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/55">
           <p class="section-title">Total</p>
           <p class="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">{projects.length}</p>
@@ -40,11 +43,88 @@ const hasSingleProject = projects.length === 1;
     </div>
   </section>
 
+  <section class="filter-panel" aria-label="项目筛选">
+    <div>
+      <p class="section-title">Filter</p>
+      <div class="filter-row" data-project-filters>
+        <button class="filter-button filter-button-active" type="button" data-filter-type="all" data-filter-value="all">
+          全部项目
+        </button>
+        {categories.map((category) => (
+          <button class="filter-button" type="button" data-filter-type="category" data-filter-value={category}>
+            {category}
+          </button>
+        ))}
+        {statuses.map((status) => (
+          <button class="filter-button" type="button" data-filter-type="status" data-filter-value={status}>
+            {status}
+          </button>
+        ))}
+        {projectTags.slice(0, 6).map((tag) => (
+          <button class="filter-button" type="button" data-filter-type="tag" data-filter-value={tag}>
+            {tag}
+          </button>
+        ))}
+      </div>
+    </div>
+    <p class="filter-count" data-project-count>{projects.length} 个项目</p>
+  </section>
+
   <section class:list={["project-grid", hasSingleProject && "project-grid-single"]}>
     {projects.map((project, index) => (
-      <div class="fade-up" data-delay={String((index % 3) + 1)}>
+      <div
+        class="fade-up"
+        data-delay={String((index % 3) + 1)}
+        data-project-item
+        data-category={project.category}
+        data-status={project.status}
+        data-tags={project.tags.join("|")}
+      >
         <ProjectCard project={project} />
       </div>
     ))}
   </section>
 </BaseLayout>
+
+<script is:inline>
+  (() => {
+    const buttons = [...document.querySelectorAll("[data-project-filters] button")];
+    const items = [...document.querySelectorAll("[data-project-item]")];
+    const count = document.querySelector("[data-project-count]");
+
+    if (buttons.length === 0 || items.length === 0) return;
+
+    const setActive = (target) => {
+      buttons.forEach((button) => {
+        button.classList.toggle("filter-button-active", button === target);
+      });
+    };
+
+    const matches = (item, type, value) => {
+      if (type === "all") return true;
+      if (type === "category") return item.dataset.category === value;
+      if (type === "status") return item.dataset.status === value;
+      if (type === "tag") return (item.dataset.tags || "").split("|").includes(value);
+      return true;
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const type = button.dataset.filterType || "all";
+        const value = button.dataset.filterValue || "all";
+        let visible = 0;
+
+        setActive(button);
+        items.forEach((item) => {
+          const show = matches(item, type, value);
+          item.hidden = !show;
+          if (show) visible += 1;
+        });
+
+        if (count) {
+          count.textContent = `${visible} 个项目`;
+        }
+      });
+    });
+  })();
+</script>

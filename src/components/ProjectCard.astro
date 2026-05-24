@@ -24,10 +24,13 @@ const coverSrc = isRemoteCover
       class="project-cover-image"
     />
     <span class="project-status">{project.status}</span>
+    <span class="project-category-chip">{project.category}</span>
   </a>
 
   <div class="project-body">
     <div class="project-meta-row">
+      <span>{project.category}</span>
+      <span aria-hidden="true">/</span>
       <span>{project.language}</span>
       <span aria-hidden="true">/</span>
       <span>{project.year}</span>
@@ -40,6 +43,14 @@ const coverSrc = isRemoteCover
     </h3>
 
     <p class="project-summary">{compact ? project.summary : project.description}</p>
+
+    {!compact && project.highlights.length > 0 && (
+      <ul class="project-highlights" aria-label={`${project.title} highlights`}>
+        {project.highlights.map((highlight) => (
+          <li>{highlight}</li>
+        ))}
+      </ul>
+    )}
 
     <div class="project-tags">
       {project.tags.map((tag) => (
