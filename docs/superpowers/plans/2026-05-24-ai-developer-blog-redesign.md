@@ -381,7 +381,7 @@ Replace the first `<section class="hero-panel fade-up">...</section>` with:
         <p class="ai-kicker">AI Developer / Project Builder</p>
         <h1 class="ai-title">把 AI 想法做成可试玩作品</h1>
         <p class="ai-subtitle">
-          我在这里展示正在构建的 AI 项目，也把开发过程、问题定位和阶段复盘沉淀成文章。项目是入口，写作是证据。
+          我在这里展示正在构建的 AI 项目，也把开发过程、问题定位和阶段复盘沉淀成文章。项目是入口，写作是记录。
         </p>
 
         <div class="hero-actions">
