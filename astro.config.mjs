@@ -3,7 +3,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 
 const repositoryName = process.env.GITHUB_REPOSITORY?.split("/")[1] ?? "my-blog";
-const repositoryOwner = process.env.GITHUB_REPOSITORY_OWNER ?? "username";
+const repositoryOwner = process.env.GITHUB_REPOSITORY_OWNER ?? "MaQinglin-665";
 const hasGithubEnv = Boolean(process.env.GITHUB_REPOSITORY);
 
 export default defineConfig({
