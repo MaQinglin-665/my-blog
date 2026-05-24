@@ -77,6 +77,39 @@ const style = `--project-hue:${project.accentHue};`;
             </section>
           ))}
         </div>
+
+        <section class="project-module-section">
+          <div class="project-section-heading-row">
+            <p class="section-title">核心模块</p>
+            <span>{project.modules.length} 个模块</span>
+          </div>
+          <div class="project-module-grid">
+            {project.modules.map((module) => (
+              <article class="project-module-card">
+                <h2>{module.title}</h2>
+                <p>{module.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="project-timeline-section">
+          <div class="project-section-heading-row">
+            <p class="section-title">开发时间线</p>
+            <span>持续迭代</span>
+          </div>
+          <ol class="project-timeline">
+            {project.timeline.map((item) => (
+              <li>
+                <time>{item.date}</time>
+                <div>
+                  <h2>{item.title}</h2>
+                  <p>{item.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
       </div>
 
       <aside class="project-detail-sidebar">
@@ -94,6 +127,18 @@ const style = `--project-hue:${project.accentHue};`;
           <div class="project-tags">
             {project.tags.map((tag) => (
               <span>{tag}</span>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <p class="section-title">问题与解决</p>
+          <div class="project-challenge-list">
+            {project.challenges.map((challenge) => (
+              <article>
+                <h2>{challenge.problem}</h2>
+                <p>{challenge.solution}</p>
+              </article>
             ))}
           </div>
         </section>
