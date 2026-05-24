@@ -36,6 +36,32 @@ const notionToMarkdown = new NotionToMarkdown({ notionClient: notion });
 let cachedPosts: Post[] | null = null;
 let hasWarnedMissingEnv = false;
 
+async function wait(ms: number) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function withNotionRetry<T>(label: string, operation: () => Promise<T>) {
+  const maxAttempts = 3;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      if (attempt === maxAttempts) {
+        break;
+      }
+
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn(`[notion] ${label} 请求失败，正在重试 ${attempt}/${maxAttempts - 1}: ${message}`);
+      await wait(600 * attempt);
+    }
+  }
+
+  throw lastError;
+}
+
 function hasNotionEnv() {
   return Boolean(notionToken && notionDatabaseId);
 }
@@ -159,9 +185,11 @@ async function queryPublishedPages() {
     return [];
   }
   const databaseId = notionDatabaseId as string;
-  const database = (await notion.databases.retrieve({
-    database_id: databaseId
-  })) as DatabaseObjectResponse;
+  const database = (await withNotionRetry("读取数据库结构", () =>
+    notion.databases.retrieve({
+      database_id: databaseId
+    })
+  )) as DatabaseObjectResponse;
   const statusProperty = database.properties.Status;
   const statusFilter =
     statusProperty?.type === "status"
@@ -178,12 +206,14 @@ async function queryPublishedPages() {
   let cursor: string | undefined;
 
   do {
-    const response = await notion.databases.query({
-      database_id: databaseId,
-      filter: statusFilter,
-      sorts: [{ property: "PublishedAt", direction: "descending" }],
-      start_cursor: cursor
-    });
+    const response = await withNotionRetry("读取文章列表", () =>
+      notion.databases.query({
+        database_id: databaseId,
+        filter: statusFilter,
+        sorts: [{ property: "PublishedAt", direction: "descending" }],
+        start_cursor: cursor
+      })
+    );
 
     for (const result of response.results) {
       if (isFullPage(result)) {
@@ -232,9 +262,11 @@ export async function getPostBySlug(slug: string) {
 export async function getPostContent(pageId: string) {
   if (!hasNotionEnv()) {
     warnMissingEnv();
-  return "因为缺少环境变量，暂时无法读取 Notion 正文。";
+    return "因为缺少环境变量，暂时无法读取 Notion 正文。";
   }
-  const mdBlocks = await notionToMarkdown.pageToMarkdown(pageId);
+  const mdBlocks = await withNotionRetry("读取文章正文", () =>
+    notionToMarkdown.pageToMarkdown(pageId)
+  );
   const mdOutput = notionToMarkdown.toMarkdownString(mdBlocks);
   return typeof mdOutput === "string" ? mdOutput : mdOutput.parent;
 }

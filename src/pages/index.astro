@@ -51,6 +51,37 @@ const contentPillars = [
     metric: `${tags.length} 个标签`
   }
 ];
+const aboutSkills = [
+  {
+    title: "AI 应用",
+    body: "把模型能力放进具体产品流程里，关注规则、交互和真实可用性。"
+  },
+  {
+    title: "前端产品化",
+    body: "用 Astro、Next.js 和 TypeScript 把想法做成可访问、可演示的界面。"
+  },
+  {
+    title: "项目复盘",
+    body: "记录从问题定位到迭代上线的过程，让作品背后的判断也能被看见。"
+  }
+];
+const aboutLinks = [
+  {
+    label: "查看 GitHub",
+    href: "https://github.com/MaQinglin-665",
+    external: true
+  },
+  {
+    label: "项目作品",
+    href: `${base}projects/`,
+    external: false
+  },
+  {
+    label: "文章复盘",
+    href: "#posts",
+    external: false
+  }
+];
 const featuredDate = featuredPost
   ? new Intl.DateTimeFormat("zh-CN", { dateStyle: "long" }).format(
       new Date(featuredPost.publishedAt)
@@ -166,6 +197,40 @@ const featuredDate = featuredPost
           <ProjectCard project={project} compact />
         </div>
       ))}
+    </div>
+  </section>
+
+  <section class="about-section fade-up" data-delay="3" aria-label="关于我">
+    <div class="about-layout">
+      <div class="about-intro">
+        <p class="section-title">关于我</p>
+        <h2 class="section-heading">在做能被试玩、被验证的 AI 作品</h2>
+        <p>
+          我现在主要围绕 AI 项目、桌面伙伴、游戏系统和作品复盘做实践。这个博客不是只放代码链接，
+          而是把项目目标、实现过程、阶段判断和下一步计划放到同一个地方，方便你快速了解每个作品为什么值得看。
+        </p>
+
+        <div class="about-actions">
+          {aboutLinks.map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noreferrer" : undefined}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="about-skill-grid">
+        {aboutSkills.map((skill) => (
+          <article class="about-skill">
+            <span>{skill.title}</span>
+            <p>{skill.body}</p>
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 
