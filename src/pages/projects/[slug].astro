@@ -139,6 +139,42 @@ const primaryLink = project.links[0] ?? null;
           ))}
         </div>
 
+        {project.aiSystem && (
+          <section class="project-ai-system-section">
+            <div class="project-section-heading-row">
+              <div>
+                <p class="section-title">AI 决策与发言系统</p>
+                <h2>让判断、行动和发言对得上</h2>
+              </div>
+              <span>{project.aiSystem.points.length} 个关键设计</span>
+            </div>
+            <p class="project-ai-system-intro">{project.aiSystem.intro}</p>
+
+            <div class="project-ai-system-grid">
+              {project.aiSystem.points.map((point) => (
+                <article class="project-ai-system-card">
+                  <h3>{point.title}</h3>
+                  <p>{point.body}</p>
+                  <div>
+                    {point.terms.map((term) => (
+                      <span>{term}</span>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <ol class="project-ai-flow">
+              {project.aiSystem.flow.map((item) => (
+                <li>
+                  <span>{item.label}</span>
+                  <p>{item.body}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
         <section class="project-module-section">
           <div class="project-section-heading-row">
             <p class="section-title">核心模块</p>

@@ -25,6 +25,18 @@ export interface Project {
     problem: string;
     solution: string;
   }[];
+  aiSystem?: {
+    intro: string;
+    points: {
+      title: string;
+      body: string;
+      terms: string[];
+    }[];
+    flow: {
+      label: string;
+      body: string;
+    }[];
+  };
   category: string;
   year: string;
   status: string;
@@ -107,6 +119,70 @@ export const projects: Project[] = [
         solution: "用阶段、身份、投票、复盘等 UI 状态把规则过程可视化，让玩家能跟上局势。"
       }
     ],
+    aiSystem: {
+      intro:
+        "为了让 AI 的判断和发言更像真实牌桌玩家，项目没有把整局内容直接丢给模型自由发挥，而是先把规则、公开信息、私密信息、座位记忆和可选动作整理成结构化输入，再让模型在边界内完成判断和表达。",
+      points: [
+        {
+          title: "规则引擎兜底",
+          body:
+            "游戏状态由 src/game 里的规则引擎统一裁判。AI、UI 和 API 只能提交命令或候选动作，夜晚技能、白天投票、身份结算和胜负判断都必须经过合法性校验。",
+          terms: ["src/game", "候选动作", "合法动作校验"]
+        },
+        {
+          title: "局势阅读 tableRead",
+          body:
+            "tableRead 会把最近发言、票型、身份声明、查验、倒牌和座位记忆转成怀疑值、信任值、焦点位和公开压力，让 AI 不是凭感觉选人，而是带着当前牌桌结构做判断。",
+          terms: ["tableRead", "座位记忆", "票型"]
+        },
+        {
+          title: "结构化推理层",
+          body:
+            "advancedReasoning、reasoningFrame、rolePlaybook、claimAudit 和 debateAgenda 会把证据硬度、身份坑、预言家线、票型复盘、反面解释和本轮追问拆成可复用线索，同时供行动和发言使用。",
+          terms: ["advancedReasoning", "claimAudit", "debateAgenda"]
+        },
+        {
+          title: "行动候选与连续性",
+          body:
+            "buildConstrainedActionInput 只把当前阶段允许的候选动作交给模型；decisionSummary 和 speechVoteContinuity 会要求 AI 解释上一轮怎么聊、本轮为什么这样投，减少发言和投票脱节。",
+          terms: ["buildConstrainedActionInput", "decisionSummary", "speechVoteContinuity"]
+        },
+        {
+          title: "发言合约 speechContract",
+          body:
+            "每次发言前都会生成 speechContract，明确 mustSay、mayAsk、mustNotAsk 和票口边界。它会限制 AI 只能评价当前已发生的信息，不能把未发言的人说成已经回应，也不能随便越权拍身份。",
+          terms: ["speechContract", "mustSay", "mustNotAsk"]
+        },
+        {
+          title: "输出校验与回退",
+          body:
+            "LLM 生成后的台词会经过 validateRenderedSpeech 检查，拦截私密信息泄漏、计划外身份结论、编造死因和不符合当前发言计划的内容；失败时会重试或回退到安全发言。",
+          terms: ["validateRenderedSpeech", "fallback", "私密信息边界"]
+        }
+      ],
+      flow: [
+        {
+          label: "读取局势",
+          body: "从规则状态、公开发言、票型、身份声明和私人视角中生成 AI 可见信息。"
+        },
+        {
+          label: "形成判断",
+          body: "用 tableRead 和结构化推理层整理怀疑对象、保护对象、票口和验证问题。"
+        },
+        {
+          label: "限制行动",
+          body: "只允许 AI 在当前阶段合法候选动作里选择，最终仍由规则引擎落盘。"
+        },
+        {
+          label: "生成发言",
+          body: "用 speechContract 把观点、公开依据、追问边界和不能说的内容压进同一个发言约束里。"
+        },
+        {
+          label: "校验输出",
+          body: "对模型台词做解析、校验、重试和 fallback，确保它既像玩家，也不越过规则和信息边界。"
+        }
+      ]
+    },
     category: "AI 游戏",
     year: "2026",
     status: "Alpha",
