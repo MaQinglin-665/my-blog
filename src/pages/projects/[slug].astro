@@ -19,6 +19,12 @@ const isRemoteCover = /^https?:\/\//.test(project.coverUrl);
 const coverSrc = isRemoteCover
   ? project.coverUrl
   : `${base}${project.coverUrl.replace(/^\/+/, "")}`;
+const showcaseImageUrl = project.demoImageUrl ?? project.coverUrl;
+const isRemoteShowcaseImage = /^https?:\/\//.test(showcaseImageUrl);
+const showcaseImageSrc = isRemoteShowcaseImage
+  ? showcaseImageUrl
+  : `${base}${showcaseImageUrl.replace(/^\/+/, "")}`;
+const isPhoneShowcase = project.demoImageVariant === "phone";
 const style = `--project-hue:${project.accentHue};`;
 const projectFacts = [
   { label: "阶段", value: project.status },
@@ -70,13 +76,15 @@ const primaryLink = project.links[0] ?? null;
       </figure>
     </section>
 
-    <section id="showcase" class="project-showcase-panel">
-      <div class="project-showcase-visual">
-        <img src={coverSrc} alt={`${project.title} 成果预览`} loading="eager" />
-        <div class="project-showcase-overlay">
-          <span>{project.status}</span>
-          <strong>{project.title}</strong>
-        </div>
+    <section id="showcase" class:list={["project-showcase-panel", isPhoneShowcase && "project-showcase-panel-phone"]}>
+      <div class:list={["project-showcase-visual", isPhoneShowcase && "project-showcase-visual-phone"]}>
+        <img src={showcaseImageSrc} alt={`${project.title} 实机演示截图`} loading="eager" />
+        {!isPhoneShowcase && (
+          <div class="project-showcase-overlay">
+            <span>{project.status}</span>
+            <strong>{project.title}</strong>
+          </div>
+        )}
       </div>
 
       <div class="project-showcase-content">

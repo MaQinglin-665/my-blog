@@ -32,6 +32,8 @@ export interface Project {
   updatedAt: string;
   accentHue: number;
   coverUrl: string;
+  demoImageUrl?: string;
+  demoImageVariant?: "phone" | "wide";
   tags: string[];
   highlights: string[];
   nextSteps: string[];
@@ -112,6 +114,8 @@ export const projects: Project[] = [
     updatedAt: "2026-05-16",
     accentHue: 42,
     coverUrl: "images/projects/ai-werewolf-cover.png?v=2",
+    demoImageUrl: "images/projects/ai-werewolf-demo-mobile.jpg",
+    demoImageVariant: "phone",
     tags: ["AI 狼人杀", "Next.js", "TypeScript", "多人联机"],
     highlights: ["本地模拟模式可完整试玩", "支持多人房间和公网隧道", "内置规则引擎与终局复盘"],
     nextSteps: ["继续打磨新手引导和公开试玩路径", "补充更多身份板子与 AI 行为诊断", "沉淀一篇完整开发复盘文章"],
