@@ -80,6 +80,22 @@ function readPlainText(items: RichTextItemResponse[] = []) {
   return items.map((item) => item.plain_text).join("").trim();
 }
 
+function toRouteSlug(value: string) {
+  let slug = value.normalize("NFKC").trim().toLowerCase();
+
+  try {
+    const url = new URL(slug);
+    slug = `${url.hostname}${url.pathname}`;
+  } catch {
+    // Keep ordinary non-URL slugs as-is before normalizing separators.
+  }
+
+  return slug
+    .replace(/['’]/g, "")
+    .replace(/[^\p{Letter}\p{Number}]+/gu, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function readFileUrl(file?: NotionFileLike | null) {
   if (!file) {
     return undefined;
@@ -167,7 +183,7 @@ function readPostFromPage(page: PageObjectResponse): Post {
   return {
     id: page.id,
     title: title || "Untitled",
-    slug: slug || page.id.replace(/-/g, ""),
+    slug: toRouteSlug(slug) || page.id.replace(/-/g, ""),
     tags,
     publishedAt,
     summary,
