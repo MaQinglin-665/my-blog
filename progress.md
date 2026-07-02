@@ -29,6 +29,8 @@
 - [x] Investigated GitHub Actions run `28559803208`; failure was Notion API `Premature close` while reading database structure.
 - [x] Confirmed later run `28568305933` on the same commit succeeded, so the failure was transient rather than a stable Astro compile error.
 - [x] Hardened Notion request retry behavior in `src/lib/notion.ts` from 3 short retries to 5 exponential-backoff attempts.
+- [x] Investigated later scheduled failures `28585701502` and `28592360141`; both exhausted retries on `notion.databases.retrieve`.
+- [x] Removed the pre-query database schema fetch from the build path and query Published pages directly with the known Notion `status` filter.
 
 ## What's In Progress
 
@@ -46,7 +48,7 @@
 
 - [ ] The AI Daily Live Preview returned 200 during this session, but the public server can drift independently from the static blog.
 - [ ] GitHub link is included as requested, but unauthenticated browser access may be unavailable depending on repo visibility.
-- [ ] Notion-backed build can still fail if Notion is down long enough to exhaust retries; current fix handles transient connection closes, not sustained outage.
+- [ ] Notion-backed build can still fail if Notion query itself is down long enough to exhaust retries; current fix removes the extra `databases.retrieve` failure point.
 - [ ] The previous ai-werewolf article draft is still not live until manually added to Notion.
 
 ## Decisions Made
@@ -58,7 +60,7 @@
 - **AI Daily status:** use `Public Preview`.
 - **AI Daily links:** include both Live Preview and GitHub; do not claim unauthenticated GitHub visibility.
 - **Gallery wording:** use generic screenshot wording so both AI狼人杀 and AI Daily gallery data render honestly.
-- **Notion CI hardening:** treat `Premature close` in GitHub Actions as transient network/API failure and increase retry budget without changing content schema behavior.
+- **Notion CI hardening:** treat `Premature close` in GitHub Actions as transient network/API failure, increase retry budget, and avoid the extra database schema fetch during every static build.
 
 ## Files Modified This Session
 
@@ -66,7 +68,7 @@
 - `docs/superpowers/plans/2026-06-24-ai-daily-project-update.md` - implementation plan.
 - `src/data/projects.ts` - added AI Daily project data as first featured project.
 - `src/pages/projects/[slug].astro` - made gallery heading generic.
-- `src/lib/notion.ts` - increased Notion request retries to 5 attempts with exponential backoff.
+- `src/lib/notion.ts` - increased Notion request retries to 5 attempts with exponential backoff and removed the pre-query `databases.retrieve` call.
 - `public/images/projects/ai-daily-home-desktop.png` - real public preview home screenshot.
 - `public/images/projects/ai-daily-detail-desktop.png` - real public preview detail screenshot.
 - `public/images/projects/ai-daily-mobile.png` - real public preview mobile screenshot.
@@ -83,6 +85,7 @@
 - [x] Browser desktop: `http://127.0.0.1:4321/`, `/projects/`, and `/projects/ai-daily/` loaded AI Daily copy, images, and links with no horizontal overflow or broken loaded images.
 - [x] Browser mobile: 390px viewport for `/`, `/projects/`, and `/projects/ai-daily/` had no horizontal overflow. After scrolling the detail page, all AI Daily gallery images loaded with no broken loaded images.
 - [x] CI investigation: failed run `28559803208` stopped at `Failed to call getStaticPaths for src/pages/blog/[slug].astro` because Notion database fetch ended with `Premature close`; latest run `28568305933` on the same SHA succeeded.
+- [x] Follow-up CI investigation: failed runs `28585701502` and `28592360141` proved 5 retries were not enough while still depending on `databases.retrieve`; local `.\init.ps1` passed after switching directly to status-filtered query.
 
 ## Notes for Next Session
 

@@ -26,7 +26,7 @@
         "feat-001"
       ],
       "status": "watch",
-      "evidence": "README documents Astro + Notion. npm run build is the primary regression gate. 2026-07-02 GitHub Actions failure was traced to transient Notion API Premature close while reading database structure; src/lib/notion.ts now retries Notion requests 5 times with exponential backoff. npm run build and git diff --check passed locally."
+      "evidence": "README documents Astro + Notion. npm run build is the primary regression gate. 2026-07-02 GitHub Actions failure was traced to transient Notion API Premature close while reading database structure; src/lib/notion.ts now retries Notion requests 5 times with exponential backoff and no longer calls databases.retrieve before querying published posts. .\\init.ps1 passed locally after the direct-query change."
     },
     {
       "id": "feat-004",

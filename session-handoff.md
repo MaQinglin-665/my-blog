@@ -3,7 +3,7 @@
 ## Current Objective
 
 - Goal: Keep the Astro + Notion portfolio updated with real project work.
-- Current status: AI Daily has been added as a featured `Public Preview` project with real screenshots, Live Preview link, GitHub link, and verified detail page. GitHub Actions transient Notion fetch failures have been investigated and locally hardened.
+- Current status: AI Daily has been added as a featured `Public Preview` project with real screenshots, Live Preview link, GitHub link, and verified detail page. GitHub Actions Notion fetch failures have been investigated; the build path now retries Notion requests and avoids the extra database schema fetch before querying posts.
 - Branch / commit: Current branch is `main`; use `git status --short` and `git log --oneline -5` at session start.
 
 ## Completed This Session
@@ -24,6 +24,8 @@
 - [x] Investigated failed GitHub Actions run `28559803208`; root cause was Notion API `Premature close` while reading database structure.
 - [x] Confirmed later run `28568305933` on the same commit succeeded.
 - [x] Increased Notion retry behavior in `src/lib/notion.ts` to 5 attempts with exponential backoff.
+- [x] Investigated later scheduled failures `28585701502` and `28592360141`; both exhausted retries while calling `notion.databases.retrieve`.
+- [x] Removed the pre-query Notion database schema fetch and query Published pages directly with the known Notion `status` filter, with a select-filter fallback for schema mismatch.
 - [x] Updated `feature_list.json` and `progress.md` with evidence and risks.
 
 ## Verification Evidence
@@ -35,6 +37,7 @@
 | Standard harness check | `.\init.ps1` | Pass | Ran build plus `git diff --check`; built 12 pages. |
 | Whitespace | `git diff --check` | Pass | Exit 0; LF/CRLF warnings only. |
 | CI failure investigation | `gh run view 28559803208 --log-failed` | Root cause found | Notion database fetch ended with `Premature close`; deploy skipped because build failed. |
+| Follow-up CI failure investigation | `gh run view 28592360141 --log-failed` | Root cause refined | Scheduled build exhausted all retries on `notion.databases.retrieve`; direct status-filtered query passed locally via `.\init.ps1`. |
 | Latest remote Actions status | `gh run list --limit 3` | Latest run success | Run `28568305933` succeeded on the same SHA before local retry hardening. |
 | Desktop browser check | `/`, `/projects/`, `/projects/ai-daily/` at desktop width | Pass | AI Daily appears as first featured project; images and links loaded; no horizontal overflow. |
 | Mobile browser check | `/`, `/projects/`, `/projects/ai-daily/` at 390px viewport | Pass | No horizontal overflow. Detail page gallery images loaded after scrolling; no broken loaded images. |
@@ -62,14 +65,14 @@
 - Do not claim unauthenticated GitHub visibility; just provide the link.
 - Use real screenshots from the public preview instead of generated or placeholder art.
 - Use generic gallery heading copy so gallery rendering remains accurate for multiple projects.
-- Treat Notion `Premature close` in Actions as a transient external dependency problem and harden retries without changing page schema validation.
+- Treat Notion `Premature close` in Actions as a transient external dependency problem, harden retries, and remove the avoidable `databases.retrieve` call from the build path.
 
 ## Blockers / Risks
 
 - The repository has existing dirty visual redesign work. Do not revert or normalize unrelated files.
 - Current branch is `main`; local work is ready to commit after final verification.
 - The public AI Daily preview can drift independently from the static portfolio.
-- Notion-backed static builds can still fail during sustained Notion/API outages even with more retries.
+- Notion-backed static builds can still fail if the Notion query endpoint itself is down long enough to exhaust retries.
 - GitHub repository visibility may require authentication depending on settings.
 - The previous AI狼人杀 technical article draft remains local until copied into Notion and published.
 
@@ -82,4 +85,4 @@
 
 ## Recommended Next Step
 
-- Push the local commit when ready so GitHub Pages uses the Notion retry hardening.
+- Push the local commit when ready so GitHub Pages uses the direct Notion query and retry hardening.

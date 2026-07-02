@@ -1,6 +1,5 @@
 import { Client, isFullPage } from "@notionhq/client";
 import type {
-  DatabaseObjectResponse,
   PageObjectResponse,
   RichTextItemResponse
 } from "@notionhq/client/build/src/api-endpoints";
@@ -199,34 +198,30 @@ function normalizeSlug(slug: string) {
   return slug.trim().toLowerCase();
 }
 
-async function queryPublishedPages() {
-  if (!hasNotionEnv()) {
-    warnMissingEnv();
-    return [];
-  }
-  const databaseId = notionDatabaseId as string;
-  const database = (await withNotionRetry("读取数据库结构", () =>
-    notion.databases.retrieve({
-      database_id: databaseId
-    })
-  )) as DatabaseObjectResponse;
-  const statusProperty = database.properties.Status;
-  const statusFilter =
-    statusProperty?.type === "status"
-      ? {
-          property: "Status" as const,
-          status: { equals: "Published" as const }
-        }
-      : {
-          property: "Status" as const,
-          select: { equals: "Published" as const }
-        };
+function isTransientNotionError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  return /premature close|econnreset|etimedout|socket|network|fetch failed/i.test(
+    message
+  );
+}
 
+function isStatusFilterMismatch(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  return /status|select|filter|property/i.test(message);
+}
+
+async function queryPagesWithStatusFilter(
+  label: string,
+  statusFilter:
+    | { property: "Status"; status: { equals: "Published" } }
+    | { property: "Status"; select: { equals: "Published" } }
+) {
+  const databaseId = notionDatabaseId as string;
   const pages: PageObjectResponse[] = [];
   let cursor: string | undefined;
 
   do {
-    const response = await withNotionRetry("读取文章列表", () =>
+    const response = await withNotionRetry(`${label}读取文章列表`, () =>
       notion.databases.query({
         database_id: databaseId,
         filter: statusFilter,
@@ -245,6 +240,30 @@ async function queryPublishedPages() {
   } while (cursor);
 
   return pages;
+}
+
+async function queryPublishedPages() {
+  if (!hasNotionEnv()) {
+    warnMissingEnv();
+    return [];
+  }
+
+  try {
+    return await queryPagesWithStatusFilter("按 status 筛选", {
+      property: "Status",
+      status: { equals: "Published" }
+    });
+  } catch (error) {
+    if (isTransientNotionError(error) || !isStatusFilterMismatch(error)) {
+      throw error;
+    }
+
+    console.warn("[notion] Status 不是 status 类型，改用 select 筛选 Published。");
+    return queryPagesWithStatusFilter("按 select 筛选", {
+      property: "Status",
+      select: { equals: "Published" }
+    });
+  }
 }
 
 export async function getAllPosts() {
