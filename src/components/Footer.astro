@@ -7,9 +7,9 @@ const base = import.meta.env.BASE_URL;
   <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="footer-panel">
       <div>
-        <p class="text-base font-semibold text-slate-800 dark:text-slate-100">MQL Blog</p>
+        <p class="text-base font-semibold text-slate-800 dark:text-slate-100">MQL Portfolio</p>
         <p class="mt-2">
-          AI 项目展示、开发复盘和技术索引放在同一个入口，用 Astro 静态发布。
+          AI works, field notes, and topic indexes in one static Astro site.
         </p>
         <p class="mt-2 text-xs text-slate-500 dark:text-slate-500">
           {year} MQL Blog. 保留所有权利。
@@ -18,25 +18,25 @@ const base = import.meta.env.BASE_URL;
 
       <div>
         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-          导航
+          Navigation
         </p>
         <div class="mt-3 flex flex-col gap-2">
-          <a class="hover:text-slate-900 dark:hover:text-white" href={base}>首页</a>
-          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}projects/`}>项目</a>
-          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}#posts`}>文章</a>
-          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}#tags`}>标签</a>
+          <a class="hover:text-slate-900 dark:hover:text-white" href={base}>Home / 首页</a>
+          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}projects/`}>Works / 项目</a>
+          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}#posts`}>Notes / 文章</a>
+          <a class="hover:text-slate-900 dark:hover:text-white" href={`${base}#tags`}>Topics / 标签</a>
         </div>
       </div>
 
       <div>
         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-          内容结构
+          Site Structure
         </p>
         <div class="mt-3 flex flex-col gap-2">
-          <p>项目作为作品入口</p>
-          <p>文章来自 Notion</p>
-          <p>标签作为主题索引</p>
-          <p>通过 GitHub Pages 发布</p>
+          <p>Project-first portfolio</p>
+          <p>Notion-synced writing</p>
+          <p>Topic-based reading paths</p>
+          <p>Published through GitHub Pages</p>
         </div>
       </div>
     </div>

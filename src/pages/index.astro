@@ -18,34 +18,32 @@ const hasSingleProject = previewProjects.length === 1;
 const projectCategories = [...new Set(projects.map((project) => project.category))];
 const heroProject = spotlightProject;
 const heroProjectUrl = heroProject ? `${base}projects/${heroProject.slug}/` : `${base}projects/`;
-const heroProjectCover = heroProject
-  ? /^https?:\/\//.test(heroProject.coverUrl)
-    ? heroProject.coverUrl
-    : `${base}${heroProject.coverUrl.replace(/^\/+/, "")}`
-  : null;
+const heroImageUrl = `${base}images/hero/lin-yuan-acg-hero.webp`;
+const heroImageFallbackUrl = `${base}images/hero/lin-yuan-acg-hero.png`;
+const aboutImageUrl = `${base}images/about/about-acg-studio.webp`;
 const heroStats = [
-  { label: "项目", value: String(projects.length) },
-  { label: "文章", value: String(posts.length) },
-  { label: "标签", value: String(tags.length) }
+  { label: "Works", value: String(projects.length) },
+  { label: "Notes", value: String(posts.length) },
+  { label: "Topics", value: String(tags.length) }
 ];
 const contentPillars = [
   {
-    label: "作品",
-    title: "项目作品",
+    label: "Works",
+    title: "项目作品 / AI Works",
     description: "AI 应用、游戏系统和可试玩原型集中展示。",
     href: `${base}projects/`,
     metric: `${projects.length} 个项目`
   },
   {
-    label: "写作",
-    title: "文章复盘",
+    label: "Notes",
+    title: "文章复盘 / Field Notes",
     description: "把开发过程、问题定位和阶段总结沉淀成文章。",
     href: "#posts",
     metric: `${posts.length} 篇文章`
   },
   {
-    label: "索引",
-    title: "标签索引",
+    label: "Index",
+    title: "标签索引 / Topic Index",
     description: "通过标签快速回到同一类主题和技术线索。",
     href: "#tags",
     metric: `${tags.length} 个标签`
@@ -94,14 +92,52 @@ const featuredDate = featuredPost
   description="MQL 的个人博客与项目展示，记录开发、AI 实践、作品迭代和日常思考。"
 >
   <section class="hero-panel fade-up">
-    <div class="ai-hero-shell">
+    <div class="ai-hero-shell acg-hero-shell">
+      <picture>
+        <source srcset={heroImageUrl} type="image/webp" />
+        <img class="acg-hero-image" src={heroImageFallbackUrl} alt="戴圆框眼镜、手持相机的二次元摄影少女主视觉" />
+      </picture>
+      <div class="acg-hero-veils" aria-hidden="true"></div>
+      <div class="acg-sparkles" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
       <div class="ai-hero-content">
-        <div>
-          <p class="ai-kicker">AI 开发者 / 作品构建</p>
-          <h1 class="ai-title">把 AI 想法做成可试玩作品</h1>
+        <div class="acg-hero-copy">
+          <p class="ai-kicker">AI Developer / ACG Workbench</p>
+          <h1 class="ai-title">
+            <span>把 AI 想法</span>
+            <span>拍成可试玩作品</span>
+          </h1>
           <p class="ai-subtitle">
-            我在这里展示正在构建的 AI 项目，也把开发过程、问题定位和阶段复盘沉淀成文章。项目是入口，写作是记录。
+            这里是我的 AI 项目相册：展示正在构建的作品，也把开发复盘沉淀成文章。
           </p>
+
+          <div class="hero-focus-grid" aria-label="首页重点信息">
+            <a href={heroProjectUrl} class="hero-focus-card hero-focus-card-wide">
+              <span class="hero-focus-pin" aria-hidden="true"></span>
+              <p class="section-title text-cyan-200">精选项目</p>
+              <h2>
+                {heroProject ? heroProject.title : "准备发布你的第一个 AI 项目"}
+              </h2>
+              <p>
+                {heroProject ? heroProject.summary : "项目发布后会自动成为首页的视觉焦点。"}
+              </p>
+            </a>
+            <div class="hero-focus-card">
+              <p class="section-title text-slate-300">最新文章</p>
+              <h2>
+                {featuredPost ? featuredPost.title : "等待第一篇文章发布"}
+              </h2>
+            </div>
+            <div class="hero-focus-card">
+              <p class="section-title text-slate-300">当前方向</p>
+              <h2>
+                AI 游戏 / Agent / 桌面伙伴
+              </h2>
+            </div>
+          </div>
 
           <div class="hero-actions">
             <a class="cta-button cta-button-bright" href={`${base}projects/`}>查看项目作品</a>
@@ -120,42 +156,47 @@ const featuredDate = featuredPost
                 {stat.label}
               </span>
             ))}
-            <span class="metric-chip metric-chip-dark">Notion → Astro → GitHub Pages</span>
+            <span class="metric-chip metric-chip-dark">Astro / Notion / GitHub Pages</span>
           </div>
         </div>
 
-        <aside class="grid gap-4">
-          <div class="ai-glow-card">
-            {heroProject && heroProjectCover ? (
-              <a href={heroProjectUrl} class="block">
-                <img src={heroProjectCover} alt={`${heroProject.title} 封面`} class="h-52 w-full object-cover object-center sm:h-64" />
-              </a>
-            ) : (
-              <div class="h-52 bg-slate-900 sm:h-64"></div>
-            )}
-            <div class="relative z-[1] p-5">
-              <p class="section-title text-cyan-200">精选项目</p>
-              <h2 class="mt-2 text-2xl font-semibold leading-tight text-white">
-                {heroProject ? heroProject.title : "准备发布你的第一个 AI 项目"}
-              </h2>
-              <p class="mt-3 text-sm leading-7 text-slate-300">
-                {heroProject ? heroProject.summary : "项目发布后会自动成为首页的视觉焦点。"}
-              </p>
+        <aside class="acg-hero-dock">
+          <div
+            class="acg-assistant-card"
+            data-camera-assistant
+          >
+            <span class="hud-corner hud-corner-tl" aria-hidden="true"></span>
+            <span class="hud-corner hud-corner-tr" aria-hidden="true"></span>
+            <span class="hud-corner hud-corner-bl" aria-hidden="true"></span>
+            <span class="hud-corner hud-corner-br" aria-hidden="true"></span>
+            <div class="acg-assistant-head">
+              <p class="section-title text-cyan-200">Camera Assistant</p>
+              <span class="hud-rec"><span></span>REC</span>
             </div>
-          </div>
-
-          <div class="grid gap-4 sm:grid-cols-2">
-            <div class="ai-panel">
-              <p class="section-title text-slate-400">最新文章</p>
-              <p class="mt-2 text-base font-semibold leading-6 text-white">
-                {featuredPost ? featuredPost.title : "等待第一篇文章发布"}
-              </p>
+            <div class="hud-readout" aria-hidden="true">
+              <span>ISO 400</span>
+              <span>F2.8</span>
+              <span>1/125</span>
             </div>
-            <div class="ai-panel">
-              <p class="section-title text-slate-400">当前方向</p>
-              <p class="mt-2 text-base font-semibold leading-6 text-white">
-                AI 游戏 / Agent / 桌面伙伴
-              </p>
+            <div class="camera-view-panel" aria-hidden="true">
+              <span class="camera-view-corner camera-view-corner-tl"></span>
+              <span class="camera-view-corner camera-view-corner-tr"></span>
+              <span class="camera-view-corner camera-view-corner-bl"></span>
+              <span class="camera-view-corner camera-view-corner-br"></span>
+              <div class="camera-view-status">
+                <span>LIVE VIEW</span>
+                <span>35MM</span>
+              </div>
+              <div class="camera-focus-box"></div>
+              <div class="camera-view-scale">
+                <i></i>
+                <i></i>
+                <i></i>
+              </div>
+            </div>
+            <div class="acg-assistant-actions">
+              <span class="hud-status-pill">FOCUS LOCKED</span>
+              <span class="hud-control" aria-hidden="true"></span>
             </div>
           </div>
         </aside>
@@ -177,8 +218,8 @@ const featuredDate = featuredPost
   <section id="projects" class="mt-10 scroll-mt-28 fade-up" data-delay="2">
     <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p class="section-title">项目作品</p>
-        <h2 class="section-heading">正在打磨的项目</h2>
+        <p class="section-title">Works / 项目作品</p>
+        <h2 class="section-heading">正在打磨的 AI works</h2>
         <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-300">
           项目区按“作品”组织，而不是按代码仓库罗列。每个项目都显示阶段、技术栈、封面和可验证链接。
         </p>
@@ -200,15 +241,21 @@ const featuredDate = featuredPost
     </div>
   </section>
 
-  <section class="about-section fade-up" data-delay="3" aria-label="关于我">
+  <section id="about" class="about-section scroll-mt-28 fade-up" data-delay="3" aria-label="关于我">
     <div class="about-layout">
       <div class="about-intro">
         <p class="section-title">关于我</p>
-        <h2 class="section-heading">在做能被试玩、被验证的 AI 作品</h2>
+        <h2 class="section-heading">把 AI 想法做成可以试玩、验证和复盘的作品。</h2>
         <p>
           我现在主要围绕 AI 项目、桌面伙伴、游戏系统和作品复盘做实践。这个博客不是只放代码链接，
           而是把项目目标、实现过程、阶段判断和下一步计划放到同一个地方，方便你快速了解每个作品为什么值得看。
         </p>
+
+        <div class="about-status-panel" aria-label="创作状态">
+          <span>当前状态</span>
+          <strong>公开构建中</strong>
+          <small>AI / 游戏 / 桌面伙伴</small>
+        </div>
 
         <div class="about-actions">
           {aboutLinks.map((link) => (
@@ -223,35 +270,32 @@ const featuredDate = featuredPost
         </div>
       </div>
 
-      <div class="about-skill-grid">
-        {aboutSkills.map((skill) => (
-          <article class="about-skill">
-            <span>{skill.title}</span>
-            <p>{skill.body}</p>
-          </article>
-        ))}
-      </div>
+      <figure class="about-visual" aria-label="AI 创作工作室插画">
+        <img
+          src={aboutImageUrl}
+          alt="ACG 风格的 AI 创作工作室，桌面上有游戏原型、代码屏幕和角色设定草图。"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+    </div>
+
+    <div class="about-skill-grid">
+      {aboutSkills.map((skill, index) => (
+        <article class="about-skill">
+          <small>{String(index + 1).padStart(2, "0")}</small>
+          <span>{skill.title}</span>
+          <p>{skill.body}</p>
+        </article>
+      ))}
     </div>
   </section>
 
   {featuredPost && (
-    <section class="featured-panel fade-up" data-delay="3">
+    <section class="featured-panel featured-panel-no-cover fade-up" data-delay="3">
       <div class="featured-layout">
-        <a class="featured-cover" href={featuredUrl!}>
-          {featuredPost.coverUrl ? (
-            <img class="featured-image" src={featuredPost.coverUrl} alt={`${featuredPost.title} 封面`} />
-          ) : (
-            <div class="flex h-full w-full items-end bg-gradient-to-br from-cyan-100 via-sky-50 to-amber-50 p-6 dark:from-cyan-900/40 dark:via-slate-900 dark:to-amber-900/30">
-              <span class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300">
-                精选文章
-              </span>
-            </div>
-          )}
-          <div class="featured-overlay"></div>
-        </a>
-
         <div class="featured-content">
-          <p class="section-title">精选文章</p>
+          <p class="section-title">Featured Note / 精选文章</p>
           <h2 class="featured-title">{featuredPost.title}</h2>
           {featuredDate && (
             <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{featuredDate}</p>
@@ -265,16 +309,16 @@ const featuredDate = featuredPost
     </section>
   )}
 
-  <section id="tags" class="section-panel scroll-mt-28 fade-up" data-delay="4">
+  <section id="tags" class="section-panel tag-film-panel scroll-mt-28 fade-up" data-delay="4">
     <div class="flex items-center justify-between gap-4">
-      <h2 class="section-title">标签导航</h2>
+      <h2 class="section-title">Topic Index / 标签导航</h2>
       {tags.length > 0 && (
         <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
           点击标签快速筛选文章
         </span>
       )}
     </div>
-    <div class="mt-4 flex flex-wrap gap-2">
+    <div class="tag-film-strip">
       {tags.length === 0 ? (
         <p class="text-sm text-slate-500 dark:text-slate-400">
           还没有标签，发布文章后会自动生成。
@@ -287,16 +331,20 @@ const featuredDate = featuredPost
     </div>
   </section>
 
-  <section id="posts" class="mt-10 scroll-mt-28 fade-up" data-delay="4">
-    <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+  <section id="posts" class="notes-board scroll-mt-28 fade-up" data-delay="4">
+    <div class="notes-board-header">
       <div>
-        <p class="section-title">全部文章</p>
-        <h2 class="section-heading">之前发布的文章</h2>
+        <p class="notes-kicker"><span aria-hidden="true"></span>Field Notes</p>
+        <h2>开发日志 / 思考笔记</h2>
+        <p>
+          记录 AI 开发过程中的想法、决策、踩坑与优化，持续迭代。
+        </p>
       </div>
       {posts.length > 0 && (
-        <p class="text-sm text-slate-500 dark:text-slate-400">
+        <div class="notes-count">
+          <span aria-hidden="true"></span>
           共 {posts.length} 篇内容
-        </p>
+        </div>
       )}
     </div>
 
@@ -306,11 +354,27 @@ const featuredDate = featuredPost
           还没有可展示的文章。请在 Notion 数据库中新建文章，并把状态设为已发布。
         </div>
       ) : (
-        feedPosts.map((post, index) => (
-          <div class="fade-up" data-delay={String((index % 3) + 1)}>
-            <PostCard post={post} />
+        <>
+          <div class="fade-up" data-delay="1">
+            <PostCard post={feedPosts[0]} featured />
           </div>
-        ))
+
+          {feedPosts.length > 1 && (
+            <div class="post-table-head" aria-hidden="true">
+              <span>日期</span>
+              <span>分类</span>
+              <span>标题 / 摘要</span>
+              <span>标签</span>
+              <span>操作</span>
+            </div>
+          )}
+
+          {feedPosts.slice(1).map((post, index) => (
+            <div class="fade-up" data-delay={String((index % 3) + 1)}>
+              <PostCard post={post} />
+            </div>
+          ))}
+        </>
       )}
     </div>
   </section>

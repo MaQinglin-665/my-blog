@@ -41,7 +41,8 @@ async function wait(ms: number) {
 }
 
 async function withNotionRetry<T>(label: string, operation: () => Promise<T>) {
-  const maxAttempts = 3;
+  const maxAttempts = 5;
+  const baseDelayMs = 800;
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
@@ -54,8 +55,11 @@ async function withNotionRetry<T>(label: string, operation: () => Promise<T>) {
       }
 
       const message = error instanceof Error ? error.message : String(error);
-      console.warn(`[notion] ${label} 请求失败，正在重试 ${attempt}/${maxAttempts - 1}: ${message}`);
-      await wait(600 * attempt);
+      const delayMs = baseDelayMs * 2 ** (attempt - 1);
+      console.warn(
+        `[notion] ${label} 请求失败，${delayMs}ms 后重试 ${attempt}/${maxAttempts - 1}: ${message}`
+      );
+      await wait(delayMs);
     }
   }
 

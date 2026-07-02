@@ -15,16 +15,13 @@ interface Props {
 
 const { project } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const isRemoteCover = /^https?:\/\//.test(project.coverUrl);
-const coverSrc = isRemoteCover
-  ? project.coverUrl
-  : `${base}${project.coverUrl.replace(/^\/+/, "")}`;
+const toProjectAssetSrc = (url: string) =>
+  /^https?:\/\//.test(url) ? url : `${base}${url.replace(/^\/+/, "")}`;
+const coverSrc = toProjectAssetSrc(project.coverUrl);
 const showcaseImageUrl = project.demoImageUrl ?? project.coverUrl;
-const isRemoteShowcaseImage = /^https?:\/\//.test(showcaseImageUrl);
-const showcaseImageSrc = isRemoteShowcaseImage
-  ? showcaseImageUrl
-  : `${base}${showcaseImageUrl.replace(/^\/+/, "")}`;
+const showcaseImageSrc = toProjectAssetSrc(showcaseImageUrl);
 const isPhoneShowcase = project.demoImageVariant === "phone";
+const galleryItems = project.gallery ?? [];
 const style = `--project-hue:${project.accentHue};`;
 const projectFacts = [
   { label: "阶段", value: project.status },
@@ -47,7 +44,7 @@ const primaryLink = project.links[0] ?? null;
           <span aria-hidden="true">&larr;</span>
           返回项目列表
         </a>
-        <p class="section-title mt-6">项目详情</p>
+        <p class="section-title mt-6">Work Detail / 项目详情</p>
         <h1 class="mt-3 text-4xl font-semibold leading-tight text-slate-900 dark:text-slate-100 sm:text-6xl">
           {project.title}
         </h1>
@@ -64,7 +61,7 @@ const primaryLink = project.links[0] ?? null;
         </div>
 
         <div class="project-detail-actions">
-          <a href="#showcase">查看成果展示</a>
+          <a href="#showcase">View Showcase / 成果展示</a>
           {project.links.map((link) => (
             <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
           ))}
@@ -88,8 +85,8 @@ const primaryLink = project.links[0] ?? null;
       </div>
 
       <div class="project-showcase-content">
-        <p class="section-title">成果展示</p>
-        <h2>从想法到可验证作品</h2>
+        <p class="section-title">Showcase / 成果展示</p>
+        <h2>From idea to verifiable work</h2>
         <p>
           这里先看这个作品已经成型的部分：它处在哪个阶段、主要解决什么问题、现在最值得点进去看的内容是什么。
         </p>
@@ -115,17 +112,17 @@ const primaryLink = project.links[0] ?? null;
         <div class="project-showcase-actions">
           {primaryLink && (
             <a href={primaryLink.href} target="_blank" rel="noreferrer">
-              打开 {primaryLink.label}
+              Open {primaryLink.label}
             </a>
           )}
-          <a href="#details">查看实现拆解</a>
+          <a href="#details">Read build notes / 实现拆解</a>
         </div>
       </div>
     </section>
 
     <section class="project-detail-grid">
       <div id="details" class="reading-surface project-detail-main">
-        <p class="section-title">作品介绍</p>
+        <p class="section-title">Build Context / 作品介绍</p>
         <p class="mt-4 text-base leading-8 text-slate-700 dark:text-slate-200">
           {project.description}
         </p>
@@ -172,6 +169,29 @@ const primaryLink = project.links[0] ?? null;
                 </li>
               ))}
             </ol>
+          </section>
+        )}
+
+        {galleryItems.length > 0 && (
+          <section class="project-gallery-section">
+            <div class="project-section-heading-row">
+              <div>
+                <p class="section-title">Gallery / 真实截图</p>
+                <h2>真实页面与关键状态</h2>
+              </div>
+              <span>{galleryItems.length} 张截图</span>
+            </div>
+            <div class="project-gallery-grid">
+              {galleryItems.map((item) => (
+                <article class="project-gallery-card">
+                  <img src={toProjectAssetSrc(item.imageUrl)} alt={`${project.title} ${item.title} 场景图`} loading="lazy" />
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.body}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </section>
         )}
 

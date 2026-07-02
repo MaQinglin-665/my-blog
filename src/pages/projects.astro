@@ -8,37 +8,75 @@ const hasSingleProject = projects.length === 1;
 const categories = [...new Set(projects.map((project) => project.category))];
 const statuses = [...new Set(projects.map((project) => project.status))];
 const projectTags = [...new Set(projects.flatMap((project) => project.tags))];
+const toAssetUrl = (url: string) =>
+  /^https?:\/\//.test(url) ? url : `${base}${url.replace(/^\/+/, "")}`;
+const heroImageUrl = `${base}images/projects/works-hero-workbench.webp`;
+const previewImages = projects.slice(0, 3).map((project) => ({
+  project,
+  src: toAssetUrl(project.demoImageUrl ?? project.coverUrl)
+}));
 ---
 
 <BaseLayout
   title="项目作品 | MQL Blog"
   description="MQL 的项目作品集，展示正在构建和持续迭代的 AI 作品。"
 >
-  <section class="page-hero">
-    <a href={base} class="back-link">
+  <section class="page-hero works-hero">
+    <img
+      class="works-hero-image"
+      src={heroImageUrl}
+      alt=""
+      aria-hidden="true"
+      loading="eager"
+    />
+    <div class="works-hero-shade" aria-hidden="true"></div>
+
+    <a href={base} class="back-link works-back-link">
       <span aria-hidden="true">&larr;</span>
       返回首页
     </a>
-    <div class="mt-5 grid gap-5 lg:grid-cols-[1fr_0.65fr] lg:items-end">
-      <div>
-        <p class="section-title">AI 项目作品集</p>
-        <h1 class="mt-2 text-4xl font-semibold leading-tight text-slate-900 dark:text-slate-100 sm:text-5xl">
-          正在构建的 AI 作品
+
+    <div class="works-hero-layout">
+      <div class="works-hero-copy">
+        <p class="works-kicker">项目作品集</p>
+        <h1 class="works-title">
+          可试玩 AI 作品索引
         </h1>
-        <p class="mt-4 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300">
+        <p class="works-subtitle">
           每个项目都按作品展示：它解决什么问题、处在哪个阶段、用了哪些技术，以及哪里可以继续查看。
         </p>
-      </div>
 
-      <div class="project-stats-grid">
-        <div class="rounded-lg border border-slate-200/75 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/55">
-          <p class="section-title">总数</p>
-          <p class="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">{projects.length}</p>
+        <div class="works-hero-stats" aria-label="项目概览">
+          <span><strong>{projects.length}</strong> 项目</span>
+          <span><strong>{categories.length}</strong> 分类</span>
+          <span><strong>{projectTags.length}</strong> 标签</span>
         </div>
-        <div class="rounded-lg border border-slate-200/75 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/55">
-          <p class="section-title">入口</p>
-          <p class="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">详情页</p>
-        </div>
+
+        <aside class="works-hero-board" aria-label="项目预览">
+          <div class="works-board-head">
+            <span>作品预览</span>
+            <strong>{projects.length} 个项目</strong>
+          </div>
+
+          <div class="works-preview-stack">
+            {previewImages.map((item, index) => (
+              <a
+                href={`${base}projects/${item.project.slug}/`}
+                class:list={["works-preview-card", index === 0 && "works-preview-card-primary"]}
+                style={`--preview-index:${index}; --project-hue:${item.project.accentHue};`}
+              >
+                <img src={item.src} alt={`${item.project.title} 预览`} loading="eager" />
+                <span>{item.project.status}</span>
+                <strong>{item.project.title}</strong>
+              </a>
+            ))}
+          </div>
+
+          <div class="works-board-foot">
+            <span>当前方向</span>
+            <strong>{categories.join(" / ")}</strong>
+          </div>
+        </aside>
       </div>
     </div>
   </section>

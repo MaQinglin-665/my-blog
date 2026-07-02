@@ -1,0 +1,62 @@
+{
+  "features": [
+    {
+      "id": "feat-001",
+      "name": "Agent harness foundation",
+      "description": "Provide a lightweight startup, state, verification, scope, and handoff harness for future agent sessions.",
+      "dependencies": [],
+      "status": "done",
+      "evidence": "Harness validation scored 100/100. .\\init.ps1 passed: npm run build completed 11 static pages and git diff --check passed with LF/CRLF warnings only."
+    },
+    {
+      "id": "feat-002",
+      "name": "Portfolio visual system",
+      "description": "Keep the blog aligned with the approved AI developer portfolio direction: image-led sections, Chinese-first copy, consistent card radius, and responsive layouts.",
+      "dependencies": [
+        "feat-001"
+      ],
+      "status": "active-design-system",
+      "evidence": "Current redesign work touches homepage, projects, posts, tags, shared components, and generated image assets. 2026-06-15 update refreshed AI 狼人杀 project data, copied the latest ai-werewolf lobby/board WebP assets, added project gallery rendering, and created a Notion-ready technical draft. 2026-06-24 update added AI Daily as a featured Public Preview project with Live Preview and GitHub links, real screenshots, and generic gallery heading support. .\\init.ps1 passed with 12 pages including /projects/ai-daily/; git diff --check passed with LF/CRLF warnings only; browser checks passed for /, /projects/, and /projects/ai-daily/ on desktop and 390px mobile with no horizontal overflow or broken loaded images."
+    },
+    {
+      "id": "feat-003",
+      "name": "Content and Notion pipeline",
+      "description": "Preserve Astro static build, Notion content loading, post routes, tag routes, sitemap generation, and GitHub Pages compatibility.",
+      "dependencies": [
+        "feat-001"
+      ],
+      "status": "watch",
+      "evidence": "README documents Astro + Notion. npm run build is the primary regression gate. 2026-07-02 GitHub Actions failure was traced to transient Notion API Premature close while reading database structure; src/lib/notion.ts now retries Notion requests 5 times with exponential backoff. npm run build and git diff --check passed locally."
+    },
+    {
+      "id": "feat-004",
+      "name": "Browser visual verification",
+      "description": "For image-led or layout changes, verify desktop and mobile browser views and record evidence before claiming done.",
+      "dependencies": [
+        "feat-002"
+      ],
+      "status": "required-for-visual-work",
+      "evidence": "Recent work used in-app browser metrics for homepage, about, posts, and projects. Continue recording viewport and overflow results in progress.md."
+    },
+    {
+      "id": "feat-005",
+      "name": "Deployment readiness",
+      "description": "Keep the site buildable as static output and avoid changes that break GitHub Pages deployment or public asset paths.",
+      "dependencies": [
+        "feat-003"
+      ],
+      "status": "watch",
+      "evidence": "astro.config.mjs and package scripts remain the source of truth. Do not change base URL or deployment assumptions without user approval."
+    },
+    {
+      "id": "feat-006",
+      "name": "Harness usability layer",
+      "description": "Add user-facing harness entry points: README guidance, reusable task template, and a rendered harness assessment report.",
+      "dependencies": [
+        "feat-001"
+      ],
+      "status": "done",
+      "evidence": "Added README agent workflow entry, docs/agent-task-template.md, and docs/harness-assessment.html. Harness validation remains 100/100. .\\init.ps1 passed: npm run build built 11 pages and git diff --check passed with LF/CRLF warnings only."
+    }
+  ]
+}

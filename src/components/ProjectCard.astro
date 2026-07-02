@@ -28,6 +28,10 @@ const coverSrc = isRemoteCover
   </a>
 
   <div class="project-body">
+    <div class="project-file-label" aria-hidden="true">
+      <span>WORK FILE</span>
+      <span>{project.status}</span>
+    </div>
     <div class="project-meta-row">
       <span>{project.category}</span>
       <span aria-hidden="true">/</span>
@@ -59,7 +63,7 @@ const coverSrc = isRemoteCover
     </div>
 
     <div class="project-actions">
-      <a href={detailUrl}>查看详情</a>
+      <a href={detailUrl}>View detail / 详情</a>
       {project.links.map((link) => (
         <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
       ))}
